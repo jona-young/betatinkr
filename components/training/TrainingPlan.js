@@ -1,46 +1,42 @@
 import React from 'react'
 import {
-    Button,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     View,
   } from 'react-native';
+import ListButton from '../blocks/ListButton';
+import ProgressBar from '../blocks/ProgressBar';
 
 
 const TrainingPlan = ({route, navigation}) => {
-    const { planName } = route.params
+    const { plan } = route.params
+
     return (
         <SafeAreaView>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View>
+                <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {planName}
+                        {plan.name}
                     </Text>
                 </View>
+                <ProgressBar progPct={0.5} color={'#45c4a0'} unfillColor={'#e1f6f0'} />
                 <View>
-                    <Text style={styles.header}>
-                        Overview
-                    </Text>
+
                     <View style={styles.itemBox}>
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Mesocycle 1 - General Strength"
-                            onPress={() => navigation.navigate('TrainingCycle', { cycleName: 'Mesocycle 1 - General Strength'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Mesocycle 2 - General Power"
-                            onPress={() => navigation.navigate('TrainingCycle', { cycleName: 'Mesocycle 2 - General Power'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Mesocycle 3 - Sport-Specific Strength"
-                            onPress={() => navigation.navigate('TrainingCycle', { cycleName: 'Mesocycle 3 - SSP Strength'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Mesocycle 4 - Sport-Specific Power"
-                            onPress={() => navigation.navigate('TrainingCycle', { cycleName: 'Mesocycle 4 - SSP Strength'})} />                                                                                    
+                        {
+                            plan.blocks.map((mesocycle, idx) => {
+                                return <ListButton 
+                                        navigation={navigation} 
+                                        route={'TrainingCycle'} 
+                                        planInfo={mesocycle} 
+                                        idx={'TC'+ (idx + 1)}
+                                        _iconColor={'#45c4a0'}
+                                        supplementaryInfo={plan.startDate} />
+                                    })
+                        }                                                                        
                     </View>
                 </View>
             </ScrollView>
@@ -49,12 +45,17 @@ const TrainingPlan = ({route, navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    banner: {
+        backgroundColor: '#45c4a0',
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 10
+    },
     header: {
-      paddingLeft: 10,
-      fontSize: 24,
-      fontWeight: '700',
-      backgroundColor: 'lightblue',
-      marginBottom: 10
+        fontFamily: 'Raleway-Bold',
+        color: 'white',
+        fontSize: 24,
+        paddingLeft: 10,
     },
     itemBox: {
         display: 'flex',
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
         color: 'white',
         marginBottom: 10,
         padding: 10
-    }
+    },
   });
 
 export default TrainingPlan;

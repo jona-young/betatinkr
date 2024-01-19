@@ -7,43 +7,35 @@ import {
     Text,
     View,
   } from 'react-native';
+import ListButton from '../blocks/ListButton';
+import ProgressBar from '../blocks/ProgressBar';
 
-  const TrainingWeek = ({ route, navigation }) => {
-    const { weekNum } = route.params
+const TrainingWeek = ({ route, navigation }) => {
+    const { plan } = route.params
 
     return (
         <SafeAreaView>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View>
+                <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {weekNum}
+                        {plan.name}
                     </Text>
                 </View>
+                <ProgressBar progPct={1} color={'#fab758'} unfillColor={'#fef3e4'} />
                 <View>
-                    <Text style={styles.header}>
-                        Progress
-                    </Text>
-                    <Text style={styles.header}>
-                        Aesthetic Progress Bar
-                    </Text>
                     <View style={styles.itemBox}>
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Workout 1 - Project Climb & Finger Strength"
-                            onPress={() => navigation.navigate('TrainingDay', { trainingDay: 'Workout 1 - Project Climb & Finger Strength'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Workout 2 - Capacity Climb 4x4-2.5"
-                            onPress={() => navigation.navigate('TrainingDay', { trainingDay: 'Workout 2 - Capacity Climb 4x4-2.5'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Workout 3 - Project Climb & Finger Strength"
-                            onPress={() => navigation.navigate('TrainingDay', { trainingDay: 'Workout 3 - Project Climb & Finger Strength'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Workout 4 - Capacity Climb 4x4-2.5"
-                            onPress={() => navigation.navigate('TrainingDay', { trainingDay: 'Workout 4 - Capacity Climb 4x4-2.5'})} />                                                                                  
+                    {
+                        plan.workouts.map((workout, idx) => {
+                            return <ListButton 
+                                    navigation={navigation} 
+                                    route={'TrainingDay'} 
+                                    planInfo={workout} 
+                                    idx={'WT'+ (idx + 1)}
+                                    _iconColor={'#fab758'}
+                                    supplementaryInfo={"Number of sections: " + workout.activities.length} />
+                        })
+                    }       
                     </View>
                 </View>
             </ScrollView>
@@ -52,12 +44,17 @@ import {
 }
 
 const styles = StyleSheet.create({
+    banner: {
+        backgroundColor: '#fab758',
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 10
+    },
     header: {
-      paddingLeft: 10,
-      fontSize: 24,
-      fontWeight: '700',
-      backgroundColor: 'lightblue',
-      marginBottom: 10
+        fontFamily: 'Raleway-Bold',
+        color: 'white',
+        fontSize: 24,
+        paddingLeft: 10,
     },
     itemBox: {
         display: 'flex',

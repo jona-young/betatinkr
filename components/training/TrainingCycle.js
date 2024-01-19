@@ -1,53 +1,40 @@
 import React from 'react';
 import {
-    Button,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     View,
   } from 'react-native';
+import ListButton from '../blocks/ListButton';
+import ProgressBar from '../blocks/ProgressBar'
 
-  const TrainingCycle = ({ route, navigation }) => {
-    const { cycleName } = route.params
+const TrainingCycle = ({ route, navigation }) => {
+    const { plan } = route.params
 
     return (
         <SafeAreaView>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View>
+                <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {cycleName}
+                        {plan.name}
                     </Text>
                 </View>
+                <ProgressBar progPct={0.66} color={'#d16b86'} unfillColor={'#f8e7ec'} />
                 <View>
-                    <Text style={styles.header}>
-                        Progress
-                    </Text>
-                    <Text style={styles.header}>
-                        Aesthetic Progress Bar
-                    </Text>
                     <View style={styles.itemBox}>
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Week 1"
-                            onPress={() => navigation.navigate('TrainingWeek', { weekNum: '1'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Week 2"
-                            onPress={() => navigation.navigate('TrainingWeek', { weekNum: '2'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Week 3"
-                            onPress={() => navigation.navigate('TrainingWeek', { weekNum: '3'})} />
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Week 4"
-                            onPress={() => navigation.navigate('TrainingWeek', { weekNum: '4'})} />  
-                        <Button 
-                            style={styles.boxItem} 
-                            title="Deload"
-                            onPress={() => navigation.navigate('TrainingWeek', { weekNum: 'Deload'})} />                                                                                  
+                    {
+                        plan.weeks.map((microcycle, idx) => {
+                            return <ListButton 
+                                    navigation={navigation} 
+                                    route={'TrainingWeek'} 
+                                    planInfo={microcycle} 
+                                    idx={'TW'+ (idx + 1)}
+                                    _iconColor={'#d16b86'}
+                                    supplementaryInfo={"Number of workouts: " + microcycle.workouts.length} />
+                        })
+                    }                                                                                      
                     </View>
                 </View>
             </ScrollView>
@@ -56,12 +43,17 @@ import {
 }
 
 const styles = StyleSheet.create({
+    banner: {
+        backgroundColor: '#d16b86',
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 10
+    },
     header: {
-      paddingLeft: 10,
-      fontSize: 24,
-      fontWeight: '700',
-      backgroundColor: 'lightblue',
-      marginBottom: 10
+        fontFamily: 'Raleway-Bold',
+        color: 'white',
+        fontSize: 24,
+        paddingLeft: 10,
     },
     itemBox: {
         display: 'flex',
