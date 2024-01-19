@@ -1,50 +1,47 @@
 import React from 'react'
 import {
-    Button,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
+    Image,
     View,
   } from 'react-native';
-
+import InfoBox from '../blocks/InfoBox';
+import ButtonItem from '../blocks/ButtonItem';
+import { useHomeInfo } from '../../datahooks/useHomeInfo';
 
 const Home = ({navigation}) => {
+    const homeInfo = useHomeInfo();
+
     return (
         <SafeAreaView>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View>
+                <View style={styles.headerBanner}>
                     <Text style={styles.header}>
-                        Your Training Plans
+                        BetaTinkr
                     </Text>
-                    <Text>
-                        What happens if a training plan is just setup as a training cycle? A.K.A. can skip the training plan?
-                        Along the same lines what if a training plan is just setup as a training week or day? then you 
-                        may skip further levels? but how do you deal with that?
-                        {"\n"}
-                        {"\n"}
-                        Could send onPress to a function that identifies if the next step is a trainingPlan, trainingCycle,
-                        trainingWeek, or trainingDay and then redirect accordingly
+                    <Text style={styles.headerSub}>
+                        We want to help you train with intent through periodization and progressive overload!
                     </Text>
+                    <ButtonItem 
+                        navigation={navigation} 
+                        route={'TrainingPlans'} 
+                        btnInfo={{name: 'Change to Login Btn'}} 
+                        bgColor={'#747ed1'} 
+                        extraStyling={styles.extraBtnStyling} />
+                </View>
+                <View style={styles.imgBox}>
+                    <Image source={require('../../assets/imgs/about-img.png')}
+                            style={styles.imgBanner} />
                 </View>
                 <View style={styles.itemBox}>
-                    <Button
-                        style={styles.boxItem}
-                        title="2023 Training Climbing Plan"
-                        onPress={() => navigation.navigate('TrainingPlan', { planName: '2023 Training Climbing Plan'})} />
-                    <Button
-                        style={styles.boxItem}
-                        title="2022 Lost Ark Legion Raid Plan"
-                        onPress={() => navigation.navigate('TrainingPlan', { planName: '2022 Lost Ark Legion Raid Plan'})} />
-                    <Button
-                        style={styles.boxItem}
-                        title="2021 Fried Rice National Cooking Championships"
-                        onPress={() => navigation.navigate('TrainingPlan', { planName: '2021 Fried Rice National Cooking Championships'})} />                    
-                    <Button
-                        style={styles.boxItem}
-                        title="2020 Coffee Grind Spin Cup"
-                        onPress={() => navigation.navigate('TrainingPlan', { planName: '2020 Coffee Grind Spin Cup'})} />
+                    {
+                        homeInfo.map((info, idx) => {
+                            return <InfoBox img={info.img} name={info.name} text={info.text} key={idx + info.name} />
+                        })
+                    }
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -52,24 +49,51 @@ const Home = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    headerBanner: {
+        height: 250,
+        backgroundColor: '#e9eaf8'
+    },
     header: {
-      paddingLeft: 10,
-      fontSize: 24,
-      fontWeight: '700',
-      backgroundColor: 'lightblue',
-      marginBottom: 10
+      fontFamily: 'Raleway-Bold',
+      fontSize: 16,
+      marginTop: 30,
+      marginBottom: 15,
+      color: '#747ed1',
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    },
+    headerSub: {
+        fontFamily: 'Raleway-SemiBold',
+        fontSize: 18,
+        paddingLeft: 20,
+        paddingRight: 20,
+        textAlign: 'center',
+        color: "#000000",
+        marginLeft: 'auto',
+        marginRight: 'auto'
+    },
+    imgBox: {
+        marginTop: -50,
+        marginBottom: 20
+    },
+    imgBanner: {
+        height: 200,
+        width: 'auto'
+    },
+    imgIcon: {
+        height: 50,
+        width: 50
     },
     itemBox: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
-    boxItem: {
-        paddingLeft: 10,
-        fontSize: 12,
-        fontWeight: '700',
-        backgroundColor: 'black',
-        color: 'white',
-        marginBottom: 10,
+    extraBtnStyling: {
+        marginTop: 20,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        width: '50%',
+        marginBottom: 5,
         padding: 10
     }
   });

@@ -1,77 +1,34 @@
 import React from 'react';
 import {
-    Button,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     View,
   } from 'react-native';
+import TrainingSection from '../blocks/TrainingSection';
+import ProgressBar from '../blocks/ProgressBar';
 
-  const TrainingDay = ({ route, navigation }) => {
-    const { trainingDay } = route.params
+const TrainingDay = ({ route, navigation }) => {
+    const { plan } = route.params
 
     return (
         <SafeAreaView>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View>
+                <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {trainingDay}
+                        {plan.name}
                     </Text>
                 </View>
+                <ProgressBar progPct={0.46} color={'#3f78e0'} unfillColor={'#e0e9fa'} />
                 <View>
-                    <Text style={styles.header}>
-                        Progress
-                    </Text>
-                    <Text style={styles.header}>
-                        Aesthetic Progress Bar
-                    </Text>
                     <View style={styles.itemBox}>
-                        <View>
-                            <Text style={styles.header}>
-                                Warm Up
-                            </Text>   
-                            <Text style={styles.boxItem}>
-                                Full Depth Squat Hold
-                            </Text>  
-                            <Text style={styles.boxItem}>
-                                Kneeling Shin Stretch
-                            </Text>  
-                            <Text style={styles.boxItem}>
-                                Open Hip Mobility - Frog Pose
-                            </Text>  
-                            <Text style={styles.boxItem}>
-                                Shoulder Mobility
-                            </Text>   
-                        </View>
-                        <View>
-                            <Text style={styles.header}>
-                                Finger Strength
-                            </Text>  
-                            <Text style={styles.boxItem}>
-                                3 x 4 - 20MM Half Crimp
-                            </Text>  
-                            <Text style={styles.boxItem}>
-                                3 x 4 - 22.5lb Pinch Block
-                            </Text>  
-                        </View>
-                        <View>
-                            <Text style={styles.header}>
-                                Project Climbing
-                            </Text> 
-                            <Text style={styles.boxItem}>
-                                1.5Hr Project & Limit Bouldering
-                            </Text>                             
-                        </View>
-                        <View>
-                            <Text style={styles.header}>
-                                Cooldown
-                            </Text> 
-                            <Text style={styles.boxItem}>
-                                3 x 8 - 35lb Reverse Wrist Curls
-                            </Text>   
-                        </View>                                                                                                                                                                              
+                    {
+                        plan.activities.map((section, idx) => {
+                            return <TrainingSection section={section} idx={idx} />
+                        })
+                    }                                                                                                                                                                             
                     </View>
                 </View>
             </ScrollView>
@@ -80,25 +37,21 @@ import {
 }
 
 const styles = StyleSheet.create({
+    banner: {
+        backgroundColor: '#3f78e0',
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 10
+    },
     header: {
-      paddingLeft: 10,
-      fontSize: 24,
-      fontWeight: '700',
-      backgroundColor: 'lightblue',
-      marginBottom: 10
+        fontFamily: 'Raleway-Bold',
+        color: 'white',
+        fontSize: 24,
+        paddingLeft: 10,
     },
     itemBox: {
         display: 'flex',
         flexDirection: 'column'
-    },
-    boxItem: {
-        paddingLeft: 10,
-        fontSize: 12,
-        fontWeight: '700',
-        backgroundColor: 'black',
-        color: 'white',
-        marginBottom: 10,
-        padding: 10
     }
   });
 
