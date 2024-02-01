@@ -6,20 +6,20 @@ import {
     View,
   } from 'react-native';
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
-import { createDeloadInfo } from '../helpers/createDeloadInfo';
-import ModalChangeWeek from '../blocks/ModalChangeWeek'
+import useWeekDates from '../../datahooks/useWeekDates'
+import ModalChangeWorkout from '../blocks/ModalChangeWorkout'
 
-const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handleChangeDeload, handleWeekChangeWorkouts, cycleStart, plan, handleChangeExercise}) => {
+const TrainingWeekItem = ({navigation, week, blockIndex, idx, handleWeekChangeWorkouts, cycleStart, indexes, handleChangeExercise}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
-    const deloadBox = createDeloadInfo(cycle.deload)
-    
+    const weekDates = useWeekDates(cycleStart, idx)
+
     return (
         <View style={styles.itemBox}>
             <TouchableOpacity
                 style={Object.assign({}, styles.boxFrame, boxShadow)}
-                onPress={() => navigation.navigate("TrainingCycle", { cycle: cycle, blockIndex: idx, handleWeekChangeWorkouts: handleWeekChangeWorkouts, cycleStart: cycleStart, plan: plan, handleChangeExercise: handleChangeExercise})}
-                key={idx + '-' + cycle.name}
+                onPress={() => navigation.navigate("TrainingWeek", { week: week, indexes: indexes, handleChangeExercise: handleChangeExercise})}
+                key={idx + '-' + week.name}
             >
                 <View style={styles.iconCircle}>
                     <Text style={styles.iconText}>
@@ -31,13 +31,13 @@ const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handle
                     <View>
                         <Text style={styles.headerName}>
                             {/* training plan name */}
-                            {cycle.name}
+                            {week.name}
                         </Text>
                     </View>
                     <View style={styles.headerSub}>
                         <Text style={styles.subText}>
                             {/* training plan dates or location */}
-                            {cycle.startDate + " - " + cycle.endDate}
+                            {weekDates.start + ' - ' + weekDates.end}
                         </Text>
                     </View>
                 </View>
@@ -46,23 +46,18 @@ const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handle
                 style={styles.weekBanner}
                 onPress={() => setModalVis(!modalVis)}
                 key={'wkChange-'+idx}>
-                <Text style={styles.weekNum}>{cycle.weeks.length}</Text>
-                <Text style={styles.weekText}>Weeks</Text>
+                <Text style={styles.weekNum}>{week.workouts.length}</Text>
+                <Text style={styles.weekText}>Workouts</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.deloadBanner}
-                onPress={() => handleChangeDeload(idx)}
-                key={'deloadBtn-'+idx}>
-                {deloadBox}
-            </TouchableOpacity>
-            <ModalChangeWeek 
-                name={cycle.name} 
-                value={cycle.weeks.length} 
-                blockIndex={idx} 
+            <ModalChangeWorkout 
+                name={week.name} 
+                value={week.workouts.length} 
+                blockIndex={blockIndex} 
+                weekIndex={idx}
                 modalVisible={modalVis} 
                 setModalVisible={setModalVis}
-                handleChange={handleMesoChangeWeek}
-                dataLabel={'Week'} />
+                handleWeekChangeWorkouts={handleWeekChangeWorkouts}
+                dataLabel={'Workout'} />
         </View>
         
     )
@@ -84,6 +79,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginLeft: 10,
         marginRight: 10,
+        width: '75%'
     },
     textFrame: {
         display: 'flex',
@@ -143,38 +139,22 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
         backgroundColor: '#3f78e0',
-        width: '16%',
-        marginLeft: 'auto'
+        width: '17%',
     },
     weekNum: {
         fontFamily: 'Raleway-Bold',
-        fontSize: 32,
+        fontSize: 36,
         textAlign: 'center',
-        paddingBottom: 3
     },
     weekText: {
         fontFamily: 'Raleway-Medium',
-        fontSize: 14,
+        fontSize: 12,
         textAlign: 'center',
-    },
-    weekNo: {
-        fontFamily: 'Raleway-ExtraBold',
-        fontSize: 28,
-        textAlign: 'center',
-        paddingBottom: 3,
-        paddingTop: 5
-    },
-    deloadBanner: {
-        backgroundColor: '#e0e9fa',
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        width: '16%',
-        marginTop: 5,
-        marginBottom: 5,
-        marginRight: 10,
     }
   });
 
 
-export default TrainingCycleItem;
+export default TrainingWeekItem;

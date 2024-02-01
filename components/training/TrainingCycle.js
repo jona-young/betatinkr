@@ -6,11 +6,11 @@ import {
     Text,
     View,
   } from 'react-native';
-import ListButton from '../blocks/ListButton';
-import ProgressBar from '../blocks/ProgressBar'
+import TrainingWeekItem from '../blocks/TrainingWeekItem';
+import WorkoutButton from '../blocks/WorkoutButton';
 
 const TrainingCycle = ({ route, navigation }) => {
-    const { plan } = route.params
+    const { cycle, blockIndex, handleWeekChangeWorkouts, cycleStart, plan, handleChangeExercise } = route.params
 
     return (
         <SafeAreaView>
@@ -18,21 +18,31 @@ const TrainingCycle = ({ route, navigation }) => {
             contentInsetAdjustmentBehavior="automatic">
                 <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {plan.name}
+                        {cycle.name}
                     </Text>
                 </View>
-                <ProgressBar progPct={0.66} color={'#d16b86'} unfillColor={'#f8e7ec'} />
                 <View>
+                    <Text>
+                            a. Remember to add deload % reduction set (100%-0% reduction in volume)
+                    </Text>
+                    <WorkoutButton 
+                            navigation={navigation}
+                            route={'CycleWorkout-Form'} 
+                            btnInfo={{name: 'Setup Workouts Across All Weeks', plan: plan, index: blockIndex}} 
+                            bgColor={'#fab758'}
+                            extraStyling={styles.extraBtnStyling} />
                     <View style={styles.itemBox}>
                     {
-                        plan.weeks.map((microcycle, idx) => {
-                            return <ListButton 
+                        cycle.weeks.map((microcycle, idx) => {
+                            return <TrainingWeekItem 
                                     navigation={navigation} 
-                                    route={'TrainingWeek'} 
-                                    planInfo={microcycle} 
-                                    idx={'TW'+ (idx + 1)}
-                                    _iconColor={'#d16b86'}
-                                    supplementaryInfo={"Number of workouts: " + microcycle.workouts.length} />
+                                    week={microcycle}
+                                    blockIndex={blockIndex} 
+                                    idx={idx} 
+                                    handleWeekChangeWorkouts={handleWeekChangeWorkouts}
+                                    cycleStart={cycleStart}
+                                    indexes={{blockIndex: blockIndex, weekIndex: idx }}
+                                    handleChangeExercise={handleChangeExercise} />
                         })
                     }                                                                                      
                     </View>
@@ -44,7 +54,7 @@ const TrainingCycle = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
     banner: {
-        backgroundColor: '#d16b86',
+        backgroundColor: '#3f78e0',
         paddingTop: 10,
         paddingBottom: 10,
         marginBottom: 10
@@ -67,6 +77,12 @@ const styles = StyleSheet.create({
         color: 'white',
         marginBottom: 10,
         padding: 10
+    },
+    extraBtnStyling: {
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        width: '70%',
+        padding: 5,
     }
   });
 

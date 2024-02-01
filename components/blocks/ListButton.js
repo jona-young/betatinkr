@@ -15,7 +15,7 @@ const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementary
         <TouchableOpacity
             style={Object.assign({}, styles.boxFrame, boxShadow)}
             onPress={() => navigation.navigate(route, { plan: planInfo})}
-            key={route + '-' + planInfo.name}
+            key={idx + '--' + planInfo.name}
         >
             <View style={Object.assign({}, styles.iconCircle, iconColor)}>
                 <Text style={styles.iconText}>
@@ -27,7 +27,7 @@ const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementary
                 <View>
                     <Text style={styles.headerName}>
                         {/* training plan name */}
-                        {planInfo.name}
+                        {planInfo && planInfo.info ? planInfo.info.name : ""}
                     </Text>
                 </View>
                 <View style={styles.headerSub}>

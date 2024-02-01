@@ -74,10 +74,10 @@ const TrainingPlans = ({navigation}) => {
                             return <ListButton 
                                     navigation={navigation} 
                                     route={'TrainingPlan'} 
-                                    planInfo={plan} 
+                                    planInfo={{info: plan}} 
                                     idx={'TP'+ (idx + 1)}
                                     _iconColor={'#3f78e0'}
-                                    supplementaryInfo={plan.startDate} />
+                                    supplementaryInfo={plan.startDate + " - " + plan.endDate} />
                         })
                     }
                 </View>

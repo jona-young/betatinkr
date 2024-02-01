@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Button,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -8,10 +7,9 @@ import {
     View,
   } from 'react-native';
 import ListButton from '../blocks/ListButton';
-import ProgressBar from '../blocks/ProgressBar';
 
 const TrainingWeek = ({ route, navigation }) => {
-    const { plan } = route.params
+    const { week, indexes, handleChangeExercise } = route.params
 
     return (
         <SafeAreaView>
@@ -19,18 +17,20 @@ const TrainingWeek = ({ route, navigation }) => {
             contentInsetAdjustmentBehavior="automatic">
                 <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {plan.name}
+                        {week.name}
                     </Text>
                 </View>
-                <ProgressBar progPct={1} color={'#fab758'} unfillColor={'#fef3e4'} />
+                <Text>
+                    1. A button to create a workout that sets up for all weeks...otherwise users can edit individual workouts on their respective pages
+                </Text>             
                 <View>
                     <View style={styles.itemBox}>
                     {
-                        plan.workouts.map((workout, idx) => {
+                        week.workouts.map((workout, idx) => {
                             return <ListButton 
                                     navigation={navigation} 
                                     route={'TrainingDay'} 
-                                    planInfo={workout} 
+                                    planInfo={{info: workout, indexes: Object.assign({}, indexes, {workoutIndex: idx}), handleChangeExercise: handleChangeExercise}} 
                                     idx={'WT'+ (idx + 1)}
                                     _iconColor={'#fab758'}
                                     supplementaryInfo={"Number of sections: " + workout.activities.length} />

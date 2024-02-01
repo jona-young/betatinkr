@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
     SafeAreaView,
     ScrollView,
@@ -6,13 +6,13 @@ import {
     View,
   } from 'react-native';
 import useForm from '../../datahooks/useForm';
-import ButtonItem from '../blocks/ButtonItem';
+import SubmitButton from '../blocks/SubmitButton';
 import FormFieldGenerator from '../helpers/FormFieldGenerator'
+import { postTrainingPlan } from '../../datahooks/useTrainingPlans'
 
 
 const FormTrainingPlan = ({navigation}) => {
-    const { form, handleChange} = useForm()
-
+    const { form, handleChange, handleChangeDeloadWeek} = useForm()
     return (
         <SafeAreaView>
             <ScrollView
@@ -21,16 +21,18 @@ const FormTrainingPlan = ({navigation}) => {
                     {
                         Object.entries(form).map(([key, value]) => {
                             if (key !== 'blocks') {
-                                return <FormFieldGenerator label={key} formValue={form[key]} handleChange={handleChange} valueType={typeof form[key]} />
+                                return <FormFieldGenerator 
+                                            label={key} 
+                                            formValue={form[key]} 
+                                            handleChange={handleChange} 
+                                            valueType={typeof form[key]}
+                                            handleChangeDeloadWeek={handleChangeDeloadWeek} />
                             }
                         })    
                     }
-                    <ButtonItem 
-                        navigation={navigation}
-                        route={'TrainingCycles-Form'} 
-                        btnInfo={{name: 'Review Training Cycles', form: form}} 
+                    <SubmitButton 
                         bgColor={'#fab758'}
-                        extraStyling={styles.extraBtnStyling} />
+                        submitFunc={() => postTrainingPlan(form, navigation, 'TrainingPlans')} />
                 </View>
             </ScrollView>
         </SafeAreaView>

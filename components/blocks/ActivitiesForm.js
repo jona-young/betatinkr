@@ -3,7 +3,6 @@ import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import ExerciseTextField from '../blocks/ExerciseTextField'
 
 const ActivitiesForm = ({activities, blockIndex, workoutIndex, activitiesIndex, addExercise, handleChangeActivity, handleChangeExercise}) => {
-
     return (
         <>
             <View style={styles.fieldBox}>
@@ -71,9 +70,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginRight: 'auto',
         marginLeft: 80,
-        width: '28%',
+        width: '35%',
         marginBottom: 5,
-        padding: 10
+        paddingTop: 7,
+        paddingBottom: 7,
+        paddingLeft: 4,
+        paddingRight: 4
     },
     buttonText: {
         fontFamily: 'Raleway-Regular',

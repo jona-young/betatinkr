@@ -8,8 +8,8 @@ import TrainingCycle from './components/training/TrainingCycle';
 import TrainingWeek from './components/training/TrainingWeek';
 import TrainingDay from './components/training/TrainingDay';
 import FormTrainingPlan from './components/training/FormTrainingPlan';
-import FormTrainingCycles from './components/training/FormTrainingCycles';
-import FormTrainingCycle from './components/training/FormTrainingCycle';
+import FormCycleWorkouts from './components/training/FormCycleWorkouts';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -24,8 +24,7 @@ const App = () => {
         <Stack.Screen name="TrainingWeek" component={TrainingWeek} options={{ title:'Training Week'}} />
         <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
         <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
-        <Stack.Screen name="TrainingCycles-Form" component={FormTrainingCycles} options={{ title:'Review Cycles'}} />
-        <Stack.Screen name="TrainingCycle-Form" component={FormTrainingCycle} options={{ title:'Review Cycle'}} />
+        <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
 
       </Stack.Navigator>
     </NavigationContainer>
