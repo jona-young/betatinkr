@@ -1,5 +1,5 @@
 // import React from 'react'
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
     SafeAreaView,
@@ -8,19 +8,25 @@ import {
     Text,
     View,
   } from 'react-native';
-import ListButton from '../blocks/ListButton';
-import ButtonItem from '../blocks/ButtonItem'
+import ListButton from '../blocks/inputs/ListButton';
+import ButtonItem from '../blocks/inputs/ButtonItem'
 import { getTrainingPlans } from '../../datahooks/useTrainingPlans';
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
+import { useTrainingStore } from '../../datastore/useTrainingStore'
 
 const TrainingPlans = ({navigation}) => {
-    const [ trainingPlans, setTrainingPlans ] = useState([])
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
-
+    const trainings = useTrainingStore((state) => state.trainingPlans)
+    const updateTrainingState = useTrainingStore((state) => state.updateTrainingPlans)
+    
     useFocusEffect(useCallback(() => {
         let isActive = true;
 
-        getTrainingPlans(setTrainingPlans)
+        const getTrainings = async () => {
+            return await getTrainingPlans(updateTrainingState)
+        }
+
+        getTrainings()
 
         return () => {
             isActive = false;
@@ -28,56 +34,57 @@ const TrainingPlans = ({navigation}) => {
     },[]))
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
+            <View style={styles.banner}>
+                <Text style={styles.header}>
+                    Your Training Plans
+                </Text>
+                <ButtonItem 
+                    navigation={navigation}
+                    route={'TrainingPlan-Form'} 
+                    btnInfo={{name: 'Add Plan'}} 
+                    bgColor={'#fab758'}
+                    extraStyling={styles.extraBtnStyling} />
+            </View>
+            <View style={Object.assign({}, styles.bannerSub, boxShadow)}>
+                <View style={styles.bannerInfoBox}>
+                    <Text style={styles.bannerStats}>
+                        174hrs
+                    </Text>
+                    <Text style={styles.bannerText}>
+                        Total Training
+                    </Text>
+                </View>
+                <View style={styles.bannerInfoBox}>
+                    <Text style={styles.bannerStats}>
+                        6429lbs
+                    </Text>
+                    <Text style={styles.bannerText}>
+                        Volume per Session
+                    </Text>
+                </View>
+                <View style={styles.bannerInfoBox}>
+                    <Text style={styles.bannerStats}>
+                        22%
+                    </Text>
+                    <Text style={styles.bannerText}>
+                        Macrocycle Completion
+                    </Text>
+                </View>
+            </View>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View style={styles.banner}>
-                    <Text style={styles.header}>
-                        Your Training Plans
-                    </Text>
-                    <ButtonItem 
-                        navigation={navigation}
-                        route={'TrainingPlan-Form'} 
-                        btnInfo={{name: 'Add Plan'}} 
-                        bgColor={'#fab758'}
-                        extraStyling={styles.extraBtnStyling} />
-                </View>
-                <View style={Object.assign({}, styles.bannerSub, boxShadow)}>
-                    <View style={styles.bannerInfoBox}>
-                        <Text style={styles.bannerStats}>
-                            174hrs
-                        </Text>
-                        <Text style={styles.bannerText}>
-                            Total Training
-                        </Text>
-                    </View>
-                    <View style={styles.bannerInfoBox}>
-                        <Text style={styles.bannerStats}>
-                            6429lbs
-                        </Text>
-                        <Text style={styles.bannerText}>
-                            Volume per Session
-                        </Text>
-                    </View>
-                    <View style={styles.bannerInfoBox}>
-                        <Text style={styles.bannerStats}>
-                            24%
-                        </Text>
-                        <Text style={styles.bannerText}>
-                            Macrocycle Completion
-                        </Text>
-                    </View>
-                </View>
                 <View style={styles.itemBox}>
                     {
-                        trainingPlans.map((plan, idx) => {
+                        trainings.map((plan, idx) => {
                             return <ListButton 
                                     navigation={navigation} 
                                     route={'TrainingPlan'} 
                                     planInfo={{info: plan}} 
                                     idx={'TP'+ (idx + 1)}
                                     _iconColor={'#3f78e0'}
-                                    supplementaryInfo={plan.startDate + " - " + plan.endDate} />
+                                    supplementaryInfo={plan.startDate + " - " + plan.endDate}
+                                    indices={{planIndex: idx}} />
                         })
                     }
                 </View>

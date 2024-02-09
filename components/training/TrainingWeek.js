@@ -6,37 +6,35 @@ import {
     Text,
     View,
   } from 'react-native';
-import ListButton from '../blocks/ListButton';
+import ListButton from '../blocks/inputs/ListButton';
+import { useTrainingStore } from '../../datastore/useTrainingStore'
 
 const TrainingWeek = ({ route, navigation }) => {
-    const { week, indexes, handleChangeExercise } = route.params
+    const { indices } = route.params
+    const trainingWeek = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex]
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
+            <View style={styles.banner}>
+                <Text style={styles.header}>
+                    {trainingWeek.name}
+                </Text>
+            </View>           
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View style={styles.banner}>
-                    <Text style={styles.header}>
-                        {week.name}
-                    </Text>
-                </View>
-                <Text>
-                    1. A button to create a workout that sets up for all weeks...otherwise users can edit individual workouts on their respective pages
-                </Text>             
-                <View>
-                    <View style={styles.itemBox}>
-                    {
-                        week.workouts.map((workout, idx) => {
-                            return <ListButton 
-                                    navigation={navigation} 
-                                    route={'TrainingDay'} 
-                                    planInfo={{info: workout, indexes: Object.assign({}, indexes, {workoutIndex: idx}), handleChangeExercise: handleChangeExercise}} 
-                                    idx={'WT'+ (idx + 1)}
-                                    _iconColor={'#fab758'}
-                                    supplementaryInfo={"Number of sections: " + workout.activities.length} />
-                        })
-                    }       
-                    </View>
+                <View style={styles.itemBox}>
+                {
+                    trainingWeek.workouts.map((workout, idx) => {
+                        return <ListButton 
+                                navigation={navigation} 
+                                route={'TrainingDay'} 
+                                planInfo={{info: workout}}
+                                idx={'WT'+ (idx + 1)}
+                                _iconColor={'#fab758'}
+                                supplementaryInfo={"Number of sections: " + workout.activities.length}
+                                indices={Object.assign({}, indices, {workoutIndex: idx})} />
+                    })
+                }       
                 </View>
             </ScrollView>
         </SafeAreaView>

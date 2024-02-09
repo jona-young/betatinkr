@@ -1,5 +1,5 @@
-import InputField from '../blocks/InputField';
-import BoolButton from '../blocks/BoolButton';
+import InputField from '../blocks/inputs/InputField';
+import BoolButton from '../blocks/inputs/BoolButton';
 
 const FormFieldGenerator = ({ label, formValue, handleChange, valueType, handleChangeDeloadWeek}) => {
     if (valueType == "string") {

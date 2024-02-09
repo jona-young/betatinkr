@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
-import { increment, decrement } from '../helpers/changeCounter'
+import { increment, decrement } from '../../helpers/changeCounter'
+import { handleChangeWeeks } from '../../../datastore/useTrainingStore'
 
-const ModalChangeWeek = ({name, value, blockIndex, modalVisible, setModalVisible, handleChange, dataLabel}) => {
+const ModalChangeWeek = ({name, value, blockIndex, modalVisible, setModalVisible, planIndex, dataLabel, navigation}) => {
     const [ weeks, setWeeks ] = useState(value)
 
     const handleSubmit = () => {
-        handleChange(blockIndex, weeks)
+        handleChangeWeeks(planIndex, blockIndex, weeks, navigation)
 
         setModalVisible(!modalVisible)
     }

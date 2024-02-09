@@ -3,7 +3,7 @@ import {
     StyleSheet,
     Text,
   } from 'react-native';
-import { bgColorSet } from '../helpers/colorSet';
+import { bgColorSet } from '../../helpers/colorSet';
 
 const SubmitButton = ({bgColor, submitFunc}) => {
     const iconColor = bgColorSet(bgColor)

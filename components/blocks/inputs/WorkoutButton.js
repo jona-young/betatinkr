@@ -3,7 +3,7 @@ import {
     StyleSheet,
     Text,
   } from 'react-native';
-import { bgColorSet } from '../helpers/colorSet';
+import { bgColorSet } from '../../helpers/colorSet';
 
 const ButtonItem = ({navigation, route, btnInfo, bgColor, extraStyling}) => {
     const iconColor = bgColorSet(bgColor)
@@ -12,7 +12,7 @@ const ButtonItem = ({navigation, route, btnInfo, bgColor, extraStyling}) => {
     return (
         <TouchableOpacity
             style={fullStyles}
-            onPress={() => navigation.navigate(route, { plan: btnInfo})}
+            onPress={() => navigation.navigate(route, { indices: btnInfo.indices})}
             key={route + '-' + btnInfo.name}
         >
             <Text style={styles.RalewayBold}>

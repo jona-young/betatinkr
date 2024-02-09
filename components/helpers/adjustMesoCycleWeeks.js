@@ -1,10 +1,11 @@
-export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deloadBool, workoutsPerWeek) => {
+export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deloadBool, workoutsPerWeek, newSection, newWeekLen) => {
     let mesoBlockCopy = []
     let nameCounter = 0
 
 
     if (weekDiff > 0) {
         if (deloadBool) {
+            // grabs all value except the last week (the deload week)
             mesoBlockCopy = form.blocks[blockIndex].weeks.slice(0, form.blocks[blockIndex].weeks.length - 1)
         } else {
             mesoBlockCopy = form.blocks[blockIndex].weeks.slice()
@@ -15,7 +16,7 @@ export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deload
         for (let i = 0; i < workoutsPerWeek; i++) {
             weekWorkouts.push({
                 name: 'Workout ' + (i + 1),
-                activities: [{name: 'New Section', exercises: [{name: 'New Exercise', reps: 0, sets: 0, intensity: 0.00, units: '', rest: 0, restUnits: ''}]}]
+                activities: [newSection]
             })
         }
 
@@ -26,7 +27,9 @@ export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deload
             })
         }
     } else if (weekDiff < 0) {
-        if (deloadBool) {
+        if (newWeekLen == 1 && deloadBool) {
+            mesoBlockCopy = form.blocks[blockIndex].weeks.slice(0, newWeekLen)
+        } else if (deloadBool) {
             mesoBlockCopy = form.blocks[blockIndex].weeks.slice(0, form.blocks[blockIndex].weeks.length - 1 + weekDiff)
         } else {
             mesoBlockCopy = form.blocks[blockIndex].weeks.slice(0, form.blocks[blockIndex].weeks.length + weekDiff)
@@ -37,7 +40,7 @@ export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deload
         return form.blocks[blockIndex].weeks
     }
 
-    if (deloadBool) {
+    if (newWeekLen !== 1 && deloadBool) {
         // create a copy of deload week and add it back to teh new updated weeks array?
         mesoBlockCopy.push(form.blocks[blockIndex].weeks[form.blocks[blockIndex].weeks.length - 1])
     }

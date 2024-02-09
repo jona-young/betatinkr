@@ -1,1 +1,0 @@
-// bottom of a section box to create a new exercise

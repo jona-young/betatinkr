@@ -4,17 +4,17 @@ import {
     Text,
     View,
   } from 'react-native';
-import { boxShadowStyle } from '../helpers/boxShadowStyle';
-import { bgColorSet } from '../helpers/colorSet';
+import { boxShadowStyle } from '../../helpers/boxShadowStyle';
+import { bgColorSet } from '../../helpers/colorSet';
 
-const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementaryInfo}) => {
+const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementaryInfo, indices}) => {
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
     const iconColor = bgColorSet(_iconColor)
 
     return (
         <TouchableOpacity
             style={Object.assign({}, styles.boxFrame, boxShadow)}
-            onPress={() => navigation.navigate(route, { plan: planInfo})}
+            onPress={() => navigation.navigate(route, { indices: indices})}
             key={idx + '--' + planInfo.name}
         >
             <View style={Object.assign({}, styles.iconCircle, iconColor)}>
@@ -36,8 +36,7 @@ const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementary
                         {supplementaryInfo}
                     </Text>
                 </View>
-            </View>
-            
+            </View>  
         </TouchableOpacity>
     )
 }

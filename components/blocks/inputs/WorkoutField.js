@@ -1,6 +1,6 @@
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 
-const WorkoutField = ({ label, formValue, handleChange, index, workoutIdx, inputMode, keyboardType}) => {
+const WorkoutField = ({ label, formValue, indices, handleChangeWorkoutField, inputMode, keyboardType}) => {
     return (
         <View style={styles.fieldBox}>
             <Text style={styles.label}>
@@ -9,7 +9,7 @@ const WorkoutField = ({ label, formValue, handleChange, index, workoutIdx, input
             <TextInput
                 style={styles.textField}
                 value={formValue}
-                onChangeText={(value) => { handleChange(index, value, workoutIdx, 'name')}}
+                onChangeText={(value) => { handleChangeWorkoutField(indices.blockIndex, indices.workoutIndex, 'name', value)}}
                 inputMode={inputMode}
                 keyboardType={keyboardType} />
          </View>

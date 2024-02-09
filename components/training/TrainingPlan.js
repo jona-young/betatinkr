@@ -6,36 +6,33 @@ import {
     View,
     Text,
   } from 'react-native';
-import useForm from '../../datahooks/useForm'
 import TrainingCycleItem from '../blocks/TrainingCycleItem';
+import { useTrainingStore } from '../../datastore/useTrainingStore'
 
 
+//BRING OVER THE INDEX OF THE PLAN
 const TrainingPlan = ({route, navigation}) => {
-    const { plan } = route.params
-    const { form, handleMesoChangeWeek, handleChangeDeload, handleWeekChangeWorkouts, handleUpdateExercise } = useForm(plan.info)
+    const { indices } = route.params
+
+    const trainingPlan = useTrainingStore((state) => state.trainingPlans)[indices.planIndex]
+
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
+            <View style={styles.banner}>
+                <Text style={styles.header}>
+                    {trainingPlan.name}
+                </Text>
+            </View>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                    <View style={styles.banner}>
-                        <Text style={styles.header}>
-                            {form.name}
-                        </Text>
-                    </View>
                     <View>
                     {
-                        form.blocks.map((cycle, idx) => {
+                        trainingPlan.blocks.map((cycle, idx) => {
                             return <TrainingCycleItem 
                                         navigation={navigation} 
                                         cycle={cycle} 
-                                        idx={idx} 
-                                        handleMesoChangeWeek={handleMesoChangeWeek}
-                                        handleChangeDeload={handleChangeDeload}
-                                        handleWeekChangeWorkouts={handleWeekChangeWorkouts}
-                                        cycleStart={cycle.startDate}
-                                        plan={form}
-                                        handleChangeExercise={handleUpdateExercise} />
+                                        indices={Object.assign({}, indices, {blockIndex: idx})} />
                         })
                     }
                     </View>

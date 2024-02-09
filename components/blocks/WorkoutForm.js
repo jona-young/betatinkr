@@ -1,39 +1,37 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import WorkoutField from './WorkoutField';
+import WorkoutField from './inputs/WorkoutField';
 import ActivitiesForm from './ActivitiesForm'
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 
-const WorkoutForm = ({workout, blockIndex, workoutIndex, addActivity, handleChangeWorkout, addExercise, handleChangeActivity, handleChangeExercise}) => {
+
+const WorkoutForm = ({workout, indices, handleChangeWorkoutField, handleAddAllActivity, handleAddAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
 
         return (
             <View style={Object.assign({}, styles.workoutBox, boxShadow)}>
                 <WorkoutField 
-                    label={'Workout ' + (workoutIndex + 1)} 
+                    label={'Workout ' + (indices.workoutIndex + 1)} 
                     formValue={workout.name} 
-                    handleChange={handleChangeWorkout} 
-                    index={blockIndex} 
-                    workoutIdx={workoutIndex}
+                    indices={indices}
+                    handleChangeWorkoutField={handleChangeWorkoutField}
                     inputMode={'text'}
                     keyboardType={'default'} />
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => addActivity(blockIndex, workoutIndex)}
-                    key={blockIndex + workoutIndex + '-' + workout.name}
+                    onPress={() => handleAddAllActivity(indices.blockIndex, indices.workoutIndex)}
+                    key={indices.blockIndex + indices.workoutIndex + '-' + workout.name}
                 >
                     <Text style={styles.buttonText}>
                         Add Section
                     </Text>
                 </TouchableOpacity>
-                { Object.entries(workout.activities).map(([key, value], index) => {
+                { Object.entries(workout.activities).map(([key, value], idx) => {
                         return <ActivitiesForm 
                                     activities={value} 
-                                    blockIndex={blockIndex} 
-                                    workoutIndex={workoutIndex} 
-                                    activitiesIndex={index}
-                                    addExercise={addExercise}
-                                    handleChangeActivity={handleChangeActivity}
-                                    handleChangeExercise={handleChangeExercise} />
+                                    indices={Object.assign({}, indices, { activityIndex: idx})}
+                                    handleAddAllExercise={handleAddAllExercise}
+                                    handleChangeAllActivities={handleChangeAllActivities}
+                                    handleChangeAllExercises={handleChangeAllExercises} />
                     })
                 }
             </View>

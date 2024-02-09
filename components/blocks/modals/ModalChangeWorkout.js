@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
-import { increment, decrement } from '../helpers/changeCounter'
+import { increment, decrement } from '../../helpers/changeCounter'
+import { handleChangeWorkouts } from '../../../datastore/useTrainingStore'
 
-const ModalChangeWeek = ({name, value, blockIndex, weekIndex, modalVisible, setModalVisible, handleWeekChangeWorkouts, dataLabel}) => {
-    const [ weeks, setWeeks ] = useState(value)
+const ModalChangeWorkout = ({name, value, blockIndex, weekIndex, modalVisible, setModalVisible, planIndex, dataLabel, navigation}) => {
+    const [ workouts, setWorkouts ] = useState(value)
 
     const handleSubmit = () => {
-        handleWeekChangeWorkouts(blockIndex, weekIndex, weeks)
+      handleChangeWorkouts(planIndex, blockIndex, weekIndex, workouts, navigation)
 
-        setModalVisible(!modalVisible)
+      setModalVisible(!modalVisible)
     }
 
     useEffect(() => {
-        setWeeks(value)
+        setWorkouts(value)
     },[value])
 
     return (
@@ -27,15 +28,15 @@ const ModalChangeWeek = ({name, value, blockIndex, weekIndex, modalVisible, setM
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalHeading}>{name}</Text>
-                    <Text style={styles.modalText}>{weeks + '' + (weeks > 1 ? ' ' + dataLabel + 's' : ' ' + dataLabel) }</Text>
+                    <Text style={styles.modalText}>{workouts + '' + (workouts > 1 ? ' ' + dataLabel + 's' : ' ' + dataLabel) }</Text>
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
-                        onPress={() => increment(weeks, setWeeks)}>
+                        onPress={() => increment(workouts, setWorkouts)}>
                         <Text style={styles.textStyle}>Add {dataLabel}</Text>
                     </Pressable>
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
-                        onPress={() => decrement(weeks, setWeeks)}>
+                        onPress={() => decrement(workouts, setWorkouts)}>
                         <Text style={styles.textStyle}>Remove {dataLabel}</Text>
                     </Pressable>
                     <Pressable
@@ -106,4 +107,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default ModalChangeWeek;
+export default ModalChangeWorkout;

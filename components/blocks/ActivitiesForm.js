@@ -1,8 +1,12 @@
 import React from 'react'
 import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import ExerciseTextField from '../blocks/ExerciseTextField'
+import ExerciseTextField from './inputs/ExerciseTextField'
 
-const ActivitiesForm = ({activities, blockIndex, workoutIndex, activitiesIndex, addExercise, handleChangeActivity, handleChangeExercise}) => {
+const ActivitiesForm = ({activities, indices, handleAddAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
+    const handleChange = (planIndex, blockIndex, workoutIndex, activityIndex, exerciseIndex, name, value) => {
+        handleChangeAllExercises(blockIndex, workoutIndex, activityIndex, exerciseIndex, name, value)
+    }
+
     return (
         <>
             <View style={styles.fieldBox}>
@@ -12,28 +16,25 @@ const ActivitiesForm = ({activities, blockIndex, workoutIndex, activitiesIndex, 
                 <TextInput
                     style={styles.textField}
                     value={activities.name}
-                    onChangeText={(value) => { handleChangeActivity(blockIndex, value, workoutIndex, activitiesIndex) }}
+                    onChangeText={(value) => { handleChangeAllActivities(indices.blockIndex, indices.workoutIndex, indices.activityIndex, value) }}
                     inputMode={'text'}
                     keyboardType={'default'} />
             </View>
             <TouchableOpacity
                     style={styles.button}
-                    onPress={() => addExercise(blockIndex, workoutIndex, activitiesIndex)}
-                    key={blockIndex + workoutIndex + '-' + activitiesIndex}
+                    onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
+                    key={indices.blockIndex + indices.workoutIndex + '-' + indices.activityIndex}
                 >
                 <Text style={styles.buttonText}>
                     Add Exercise
                 </Text>
             </TouchableOpacity>
-            { activities && activities.exercises && activities.exercises.map((exercise, i) => {
+            { activities && activities.exercises && activities.exercises.map((exercise, idx) => {
                 return (
                     <ExerciseTextField 
                         exercise={exercise} 
-                        blockIndex={blockIndex} 
-                        workoutIndex={workoutIndex}
-                        activitiesIndex={activitiesIndex}
-                        exerciseIndex={i}
-                        handleChangeExercise={handleChangeExercise} />
+                        indices={Object.assign({}, indices, { exerciseIndex: idx })} 
+                        handleChange={handleChange} />
                 )
                 })
             }
