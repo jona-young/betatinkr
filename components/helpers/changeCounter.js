@@ -5,7 +5,7 @@ export const increment = (value, setValue) => {
 }
 
 export const decrement = (value, setValue) => {
-    if (value > 1) {
+    if (value >= 2) {
         setValue(value-1)
     }
 }

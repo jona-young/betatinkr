@@ -5,39 +5,45 @@ import {
     StyleSheet,
     Text,
     View,
+    TouchableOpacity
   } from 'react-native';
-import TrainingSection from './TrainingSections';
+import { useTrainingStore, addActivity } from '../../datastore/useTrainingStore'
 
-const TrainingDay = ({ route, navigation }) => {
-    const { plan } = route.params
-    
+
+import TrainingSections from './TrainingSections';
+
+const TrainingDay = ({ navigation, route }) => {
+    const { indices } = route.params
+    const trainingDay = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex].workouts[indices.workoutIndex]
+
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
+            
+            <View style={styles.banner}>
+                <Text style={styles.header}>
+                    {trainingDay.name}
+                </Text>
+            </View> 
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
-                <View style={styles.banner}>
-                    <Text style={styles.header}>
-                        {plan.info.name}
-                    </Text>
-                </View>
-                <Text>
-                    1. A button to add/remove sections
-                </Text> 
-                <Text>
-                    2. A button to add/remove exercises and their respective reps, sets, units, intensity, rest
-                </Text>    
                 <View>
                     <View style={styles.itemBox}>
                     {
-                        plan.info.activities.map((section, idx) => {
-                            return <TrainingSection section={section} 
-                                                    idx={idx} 
-                                                    indexes={Object.assign({}, plan.indexes, {activityIndex: idx})} 
-                                                    handleChangeExercise={plan.handleChangeExercise} />
+                        trainingDay.activities.map((section, idx) => {
+                            return <TrainingSections 
+                                        indices={Object.assign({}, indices, {activityIndex: idx })}
+                                        navigation={navigation} />
                         })
                     }                                                                                                                                                                             
                     </View>
                 </View>
+                <TouchableOpacity
+                    style={styles.btnStyling}
+                    onPress={() => addActivity(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation)} >
+                        <Text style={styles.addText}>
+                            Add new Section..
+                        </Text>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     )  
@@ -59,7 +65,22 @@ const styles = StyleSheet.create({
     itemBox: {
         display: 'flex',
         flexDirection: 'column'
-    }
+    },
+    btnStyling: {
+        width: '33%',
+        marginLeft: 10,
+        padding: 10,
+        backgroundColor: "#fab758",
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
+    addText: {
+        fontFamily: 'Raleway-ExtraBold',
+        fontSize: 12,
+        color: 'white',
+    },
   });
 
 export default TrainingDay;

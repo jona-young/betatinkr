@@ -1,36 +1,28 @@
 import { useState } from 'react';
 import { View, Text, Modal, Pressable, StyleSheet } from 'react-native'
-import ExerciseTextField from '../blocks/ExerciseTextField'
+import { handleUpdateExercise, removeExercise } from '../../../datastore/useTrainingStore'
+import ExerciseTextField from '../inputs/ExerciseTextField'
 
-// onClick of an exercise in a section, change the name, reps, sets, intensity, units, rest, rest units
-// block index, week index, workoutindex, activitiesindex, section index, exercise index
-// form listing exercise name, reps, sets, intensity, units, rest,rest units, submit button
-// handleSubmit updated with handleChangeExercise equivalent function
-const ModalChangeExercise = ({exercise, 
-                              blockIndex,
-                              weekIndex,
-                              workoutIndex,
-                              activityIndex,
-                              exerciseIndex,
-                              modalVisible, 
-                              setModalVisible, 
-                              handleChangeExercise }) => {
-
+const ModalChangeExercise = ({exercise, indices, modalVisible, setModalVisible, navigation}) => {
     const [ exerciseData, setExerciseData ] = useState(exercise)
 
-    // currently any changes to the text box updates handlesubmit which automatically closes the window as per setModalVisible
-    // create custom state and handleChange function to this modal then add a 'submit' button which triggers handleSubmit()
-    // at which point the state will be applied to the workout for each field changed in a loop of sorts?
+
     const handleSubmit = () => {
-        handleChangeExercise(blockIndex, exerciseData, workoutIndex, activityIndex, exerciseIndex, weekIndex, weekIndex)
+        handleUpdateExercise(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, exerciseData, navigation)
 
         setModalVisible(!modalVisible);
     }
 
-    const handleChange = (blockIndex, name, value, workoutIndex, activitiesIndex, exerciseIndex) => {
-        setExerciseData({...exerciseData, [name]: value})
+    const handleRemove = () => {
+      removeExercise(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, navigation)
+      
+      setModalVisible(!modalVisible);
     }
 
+    const handleChange = (planIndex, blockIndex, workoutIndex, activityIndex, exerciseIndex, name, value) => {
+        setExerciseData({...exerciseData, [name]: value})
+    }
+    
     return (
         <Modal
             animationType="slide"
@@ -44,17 +36,19 @@ const ModalChangeExercise = ({exercise,
                 <View style={styles.offsetETF}>
                     <ExerciseTextField
                         exercise={exerciseData}
-                        blockIndex={blockIndex}
-                        workoutIndex={workoutIndex} 
-                        activitiesIndex={activityIndex} 
-                        exerciseIndex={exerciseIndex} 
-                        handleChangeExercise={handleChange} />
+                        indices={indices}
+                        handleChange={handleChange} />
                 </View>
                 <View style={styles.buttonOptions}>
                     <Pressable
                             style={Object.assign({}, styles.button, styles.buttonOpen)}
                             onPress={() => handleSubmit()}>
                             <Text style={styles.textStyle}>Submit</Text>
+                    </Pressable>
+                    <Pressable
+                            style={Object.assign({}, styles.button, styles.buttonRemove)}
+                            onPress={() => handleRemove()}>
+                            <Text style={styles.textStyle}>Remove</Text>
                     </Pressable>
                     <Pressable
                         style={Object.assign({}, styles.button, styles.buttonClose)}
@@ -95,9 +89,9 @@ const styles = StyleSheet.create({
     buttonOptions: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
-        width: '100%',
-        marginBottom: 10
+        justifyContent: 'space-between',
+        width: '93%',
+        marginBottom: 10,
     },
     button: {
       padding: 5,
@@ -105,18 +99,19 @@ const styles = StyleSheet.create({
       elevation: 2,
     },
     buttonOpen: {
-      backgroundColor: '#F194FF',
+      backgroundColor: '#2196F3',
       width: 70,
-      marginBottom: 0,
       borderRadius: 5,
-      marginRight: 15,
-      marginLeft: 40
     },
     buttonClose: {
       backgroundColor: '#2196F3',
       borderRadius: 5,
       paddingRight: 10,
       paddingLeft: 10
+    },
+    buttonRemove: {
+      backgroundColor: "#de2a1d",
+      borderRadius: 5,
     },
     textStyle: {
       color: 'white',

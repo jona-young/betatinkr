@@ -7,24 +7,24 @@ import {
   } from 'react-native';
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 import useWeekDates from '../../datahooks/useWeekDates'
-import ModalChangeWorkout from '../blocks/ModalChangeWorkout'
+import ModalChangeWorkout from './modals/ModalChangeWorkout'
 
-const TrainingWeekItem = ({navigation, week, blockIndex, idx, handleWeekChangeWorkouts, cycleStart, indexes, handleChangeExercise}) => {
+const TrainingWeekItem = ({navigation, week, cycleStart, indices}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
-    const weekDates = useWeekDates(cycleStart, idx)
+    const weekDates = useWeekDates(cycleStart, indices.weekIndex)
 
     return (
         <View style={styles.itemBox}>
             <TouchableOpacity
                 style={Object.assign({}, styles.boxFrame, boxShadow)}
-                onPress={() => navigation.navigate("TrainingWeek", { week: week, indexes: indexes, handleChangeExercise: handleChangeExercise})}
-                key={idx + '-' + week.name}
+                onPress={() => navigation.navigate("TrainingWeek", { indices: indices})}
+                key={indices.weekIndex + '-' + week.name}
             >
                 <View style={styles.iconCircle}>
                     <Text style={styles.iconText}>
                         {/* icon training plan */}
-                        {idx + 1}
+                        {indices.weekIndex + 1}
                     </Text>
                 </View>
                 <View style={styles.textFrame}>
@@ -45,19 +45,20 @@ const TrainingWeekItem = ({navigation, week, blockIndex, idx, handleWeekChangeWo
             <TouchableOpacity 
                 style={styles.weekBanner}
                 onPress={() => setModalVis(!modalVis)}
-                key={'wkChange-'+idx}>
+                key={'wkChange-'+indices.weekIndex}>
                 <Text style={styles.weekNum}>{week.workouts.length}</Text>
                 <Text style={styles.weekText}>Workouts</Text>
             </TouchableOpacity>
             <ModalChangeWorkout 
                 name={week.name} 
                 value={week.workouts.length} 
-                blockIndex={blockIndex} 
-                weekIndex={idx}
+                blockIndex={indices.blockIndex} 
+                weekIndex={indices.weekIndex}
                 modalVisible={modalVis} 
                 setModalVisible={setModalVis}
-                handleWeekChangeWorkouts={handleWeekChangeWorkouts}
-                dataLabel={'Workout'} />
+                planIndex={indices.planIndex}
+                dataLabel={'Workout'}
+                navigation={navigation} />
         </View>
         
     )

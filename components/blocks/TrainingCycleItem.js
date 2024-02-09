@@ -7,9 +7,10 @@ import {
   } from 'react-native';
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 import { createDeloadInfo } from '../helpers/createDeloadInfo';
-import ModalChangeWeek from '../blocks/ModalChangeWeek'
+import { handleChangeDeload } from '../../datastore/useTrainingStore'
+import ModalChangeWeek from './modals/ModalChangeWeek'
 
-const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handleChangeDeload, handleWeekChangeWorkouts, cycleStart, plan, handleChangeExercise}) => {
+const TrainingCycleItem = ({navigation, cycle, indices}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
     const deloadBox = createDeloadInfo(cycle.deload)
@@ -18,13 +19,13 @@ const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handle
         <View style={styles.itemBox}>
             <TouchableOpacity
                 style={Object.assign({}, styles.boxFrame, boxShadow)}
-                onPress={() => navigation.navigate("TrainingCycle", { cycle: cycle, blockIndex: idx, handleWeekChangeWorkouts: handleWeekChangeWorkouts, cycleStart: cycleStart, plan: plan, handleChangeExercise: handleChangeExercise})}
-                key={idx + '-' + cycle.name}
+                onPress={() => navigation.navigate("TrainingCycle", { indices: indices})}
+                key={indices.blockIndex + '-' + cycle.name}
             >
                 <View style={styles.iconCircle}>
                     <Text style={styles.iconText}>
                         {/* icon training plan */}
-                        {idx + 1}
+                        {indices.blockIndex + 1}
                     </Text>
                 </View>
                 <View style={styles.textFrame}>
@@ -45,26 +46,26 @@ const TrainingCycleItem = ({navigation, cycle, idx, handleMesoChangeWeek, handle
             <TouchableOpacity 
                 style={styles.weekBanner}
                 onPress={() => setModalVis(!modalVis)}
-                key={'wkChange-'+idx}>
+                key={'wkChange-'+indices.blockIndex}>
                 <Text style={styles.weekNum}>{cycle.weeks.length}</Text>
                 <Text style={styles.weekText}>Weeks</Text>
             </TouchableOpacity>
             <TouchableOpacity 
                 style={styles.deloadBanner}
-                onPress={() => handleChangeDeload(idx)}
-                key={'deloadBtn-'+idx}>
+                onPress={() => handleChangeDeload(indices.planIndex, indices.blockIndex, navigation)}
+                key={'deloadBtn-'+indices.blockIndex}>
                 {deloadBox}
             </TouchableOpacity>
             <ModalChangeWeek 
                 name={cycle.name} 
                 value={cycle.weeks.length} 
-                blockIndex={idx} 
+                blockIndex={indices.blockIndex} 
                 modalVisible={modalVis} 
                 setModalVisible={setModalVis}
-                handleChange={handleMesoChangeWeek}
-                dataLabel={'Week'} />
+                planIndex={indices.planIndex}
+                dataLabel={'Week'}
+                navigation={navigation} />
         </View>
-        
     )
 }
 

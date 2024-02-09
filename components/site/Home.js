@@ -8,7 +8,7 @@ import {
     View,
   } from 'react-native';
 import InfoBox from '../blocks/InfoBox';
-import ButtonItem from '../blocks/ButtonItem';
+import ButtonItem from '../blocks/inputs/ButtonItem';
 import { useHomeInfo } from '../../datahooks/useHomeInfo';
 
 const Home = ({navigation}) => {
@@ -16,34 +16,31 @@ const Home = ({navigation}) => {
 
     return (
         <SafeAreaView>
-            <ScrollView
-            contentInsetAdjustmentBehavior="automatic">
-                <View style={styles.headerBanner}>
-                    <Text style={styles.header}>
-                        BetaTinkr
-                    </Text>
-                    <Text style={styles.headerSub}>
-                        We want to help you train with intent through periodization and progressive overload!
-                    </Text>
-                    <ButtonItem 
-                        navigation={navigation} 
-                        route={'TrainingPlans'} 
-                        btnInfo={{name: 'Change to Login Btn'}} 
-                        bgColor={'#747ed1'} 
-                        extraStyling={styles.extraBtnStyling} />
-                </View>
-                <View style={styles.imgBox}>
-                    <Image source={require('../../assets/imgs/about-img.png')}
-                            style={styles.imgBanner} />
-                </View>
-                <View style={styles.itemBox}>
-                    {
-                        homeInfo.map((info, idx) => {
-                            return <InfoBox img={info.img} name={info.name} text={info.text} key={idx + info.name} />
-                        })
-                    }
-                </View>
-            </ScrollView>
+            <View style={styles.headerBanner}>
+                <Text style={styles.header}>
+                    BetaTinkr
+                </Text>
+                <Text style={styles.headerSub}>
+                    We want to help you train with intent through periodization and progressive overload!
+                </Text>
+                <ButtonItem 
+                    navigation={navigation} 
+                    route={'TrainingPlans'} 
+                    btnInfo={{name: 'Change to Login Btn'}} 
+                    bgColor={'#747ed1'} 
+                    extraStyling={styles.extraBtnStyling} />
+            </View>
+            <View style={styles.imgBox}>
+                <Image source={require('../../assets/imgs/about-img.png')}
+                        style={styles.imgBanner} />
+            </View>
+            <View style={styles.itemBox}>
+                {
+                    homeInfo.map((info, idx) => {
+                        return <InfoBox img={info.img} name={info.name} text={info.text} key={idx + info.name} />
+                    })
+                }
+            </View>
         </SafeAreaView>
     )
 }

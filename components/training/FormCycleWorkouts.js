@@ -1,17 +1,20 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, View, StyleSheet } from 'react-native';
 import WorkoutForm from '../blocks/WorkoutForm'
-import useForm from '../../datahooks/useForm'
-import SubmitButton from '../blocks/SubmitButton';
+import useSetTrainingBlock from '../../datahooks/useSetTrainingBlock'
+import SubmitButton from '../blocks/inputs/SubmitButton';
+import { getPlanCopy } from '../../datastore/useTrainingStore'
 import { putTrainingPlan } from '../../datahooks/useTrainingPlans'
 
 
 // Represents one mesocycle where FormTrainingCycles is a parent list of all mesocycles for the macrocycle
 const FormCycleWorkouts = ({ route, navigation}) => {
     // index refers to the mesocycle block within the training plan
-    const { plan, index } = route.params
-    const { form, handleChangeWorkout, handleChangeAllActivities, handleChangeAllExercises, handleAddAllActivity, handleAddAllExercise } = useForm(plan)
+    const { indices } = route.params
+    const trainingPlanCopy = getPlanCopy(indices)
 
+    const { form, handleChangeWorkoutField, handleAddAllActivity, handleAddAllExercise, handleChangeAllActivities, handleChangeAllExercises } = useSetTrainingBlock(trainingPlanCopy)
+    
     // This will allow you to set the workout for all of the weeks in this mesocycle...
     return (
         <SafeAreaView>
@@ -21,16 +24,15 @@ const FormCycleWorkouts = ({ route, navigation}) => {
                     <SubmitButton 
                             bgColor={'#fab758'}
                             submitFunc={() => putTrainingPlan(form, navigation, 'TrainingPlans')} />
-                    { form["blocks"][index].weeks[0].workouts.map((workout, workoutIdx) => {
+                    { form.blocks[indices.blockIndex].weeks[0].workouts.map((workout, idx) => {
                             return <WorkoutForm 
                                         workout={workout} 
-                                        blockIndex={index} 
-                                        workoutIndex={workoutIdx} 
-                                        addActivity={handleAddAllActivity}
-                                        handleChangeWorkout={handleChangeWorkout}
-                                        addExercise={handleAddAllExercise}
-                                        handleChangeActivity={handleChangeAllActivities}
-                                        handleChangeExercise={handleChangeAllExercises} />
+                                        indices={Object.assign({}, indices, {workoutIndex: idx})}
+                                        handleChangeWorkoutField={handleChangeWorkoutField}
+                                        handleChangeAllActivities={handleChangeAllActivities}
+                                        handleChangeAllExercises={handleChangeAllExercises}
+                                        handleAddAllActivity={handleAddAllActivity}
+                                        handleAddAllExercise={handleAddAllExercise} />
                         })
                     }
                 </View>
@@ -39,7 +41,6 @@ const FormCycleWorkouts = ({ route, navigation}) => {
 
     )
 }
-
 
 const styles = StyleSheet.create({
     workout: {

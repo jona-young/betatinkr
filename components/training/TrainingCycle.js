@@ -7,47 +7,40 @@ import {
     View,
   } from 'react-native';
 import TrainingWeekItem from '../blocks/TrainingWeekItem';
-import WorkoutButton from '../blocks/WorkoutButton';
+import WorkoutButton from '../blocks/inputs/WorkoutButton';
+import { useTrainingStore } from '../../datastore/useTrainingStore'
 
 const TrainingCycle = ({ route, navigation }) => {
-    const { cycle, blockIndex, handleWeekChangeWorkouts, cycleStart, plan, handleChangeExercise } = route.params
+    const { indices } = route.params
+    const trainingCycle = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex]
 
     return (
-        <SafeAreaView>
-            <ScrollView
-            contentInsetAdjustmentBehavior="automatic">
+        <SafeAreaView style={{flex: 1}}>
                 <View style={styles.banner}>
                     <Text style={styles.header}>
-                        {cycle.name}
+                        {trainingCycle.name}
                     </Text>
                 </View>
-                <View>
-                    <Text>
-                            a. Remember to add deload % reduction set (100%-0% reduction in volume)
-                    </Text>
                     <WorkoutButton 
                             navigation={navigation}
                             route={'CycleWorkout-Form'} 
-                            btnInfo={{name: 'Setup Workouts Across All Weeks', plan: plan, index: blockIndex}} 
+                            btnInfo={{name: 'Setup Workouts Across All Weeks', indices: indices}} 
                             bgColor={'#fab758'}
                             extraStyling={styles.extraBtnStyling} />
-                    <View style={styles.itemBox}>
-                    {
-                        cycle.weeks.map((microcycle, idx) => {
-                            return <TrainingWeekItem 
-                                    navigation={navigation} 
-                                    week={microcycle}
-                                    blockIndex={blockIndex} 
-                                    idx={idx} 
-                                    handleWeekChangeWorkouts={handleWeekChangeWorkouts}
-                                    cycleStart={cycleStart}
-                                    indexes={{blockIndex: blockIndex, weekIndex: idx }}
-                                    handleChangeExercise={handleChangeExercise} />
-                        })
-                    }                                                                                      
-                    </View>
-                </View>
-            </ScrollView>
+                    <ScrollView
+                    contentInsetAdjustmentBehavior="automatic">
+                        <View style={styles.itemBox}>
+                        {
+                            trainingCycle.weeks.map((microcycle, idx) => {
+                                return <TrainingWeekItem 
+                                        navigation={navigation} 
+                                        week={microcycle}
+                                        cycleStart={trainingCycle.startDate}
+                                        indices={Object.assign({}, indices, {weekIndex: idx})} />
+                            })
+                        }                                                                                      
+                        </View>
+                    </ScrollView>
         </SafeAreaView>
     )  
 }

@@ -5,8 +5,8 @@ import {
     StyleSheet,
     View,
   } from 'react-native';
-import useForm from '../../datahooks/useForm';
-import SubmitButton from '../blocks/SubmitButton';
+import useForm from '../../datahooks/useCreateTrainingPlan';
+import SubmitButton from '../blocks/inputs/SubmitButton';
 import FormFieldGenerator from '../helpers/FormFieldGenerator'
 import { postTrainingPlan } from '../../datahooks/useTrainingPlans'
 
