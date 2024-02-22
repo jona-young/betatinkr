@@ -1,8 +1,10 @@
 import { parse, addWeeks, subDays, isBefore, format} from 'date-fns';
 
 export const createTrainingCycles = async (_startDate, _endDate, weeksPerBlock, deload, workoutsPerWeek) => {
-    let start = parse(_startDate, "yyyy-MM-dd", new Date())
-    const end = parse(_endDate, "yyyy-MM-dd", new Date())
+    // let start = parse(_startDate, "yyyy-MM-dd", new Date())
+    // const end = parse(_endDate, "yyyy-MM-dd", new Date())
+    let start = _startDate
+    const end = _endDate
 
 
     let mesoBlockLen

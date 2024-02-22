@@ -16,19 +16,11 @@ const WorkoutForm = ({workout, indices, handleChangeWorkoutField, handleAddAllAc
                     handleChangeWorkoutField={handleChangeWorkoutField}
                     inputMode={'text'}
                     keyboardType={'default'} />
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => handleAddAllActivity(indices.blockIndex, indices.workoutIndex)}
-                    key={indices.blockIndex + indices.workoutIndex + '-' + workout.name}
-                >
-                    <Text style={styles.buttonText}>
-                        Add Section
-                    </Text>
-                </TouchableOpacity>
                 { Object.entries(workout.activities).map(([key, value], idx) => {
                         return <ActivitiesForm 
                                     activities={value} 
                                     indices={Object.assign({}, indices, { activityIndex: idx})}
+                                    handleAddAllActivity={handleAddAllActivity}
                                     handleAddAllExercise={handleAddAllExercise}
                                     handleChangeAllActivities={handleChangeAllActivities}
                                     handleChangeAllExercises={handleChangeAllExercises} />
@@ -61,7 +53,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         textAlign: 'center',
         color: 'white',
-
     },
     workoutBox: {
         marginTop: 10,

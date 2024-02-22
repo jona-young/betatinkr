@@ -1,18 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
     SafeAreaView,
     ScrollView,
     StyleSheet,
     View,
   } from 'react-native';
-import useForm from '../../datahooks/useCreateTrainingPlan';
+import useCreateTrainingPlan from '../../datahooks/useCreateTrainingPlan';
 import SubmitButton from '../blocks/inputs/SubmitButton';
 import FormFieldGenerator from '../helpers/FormFieldGenerator'
-import { postTrainingPlan } from '../../datahooks/useTrainingPlans'
+import { AxiosContext } from '../../datastore/AxiosContext'
 
 
 const FormTrainingPlan = ({navigation}) => {
-    const { form, handleChange, handleChangeDeloadWeek} = useForm()
+    const { form, handleChange, handleChangeDeloadWeek} = useCreateTrainingPlan()
+    const axiosContext = useContext(AxiosContext)
+
     return (
         <SafeAreaView>
             <ScrollView
@@ -22,6 +24,7 @@ const FormTrainingPlan = ({navigation}) => {
                         Object.entries(form).map(([key, value]) => {
                             if (key !== 'blocks') {
                                 return <FormFieldGenerator 
+                                            key={'formfield-'+key}
                                             label={key} 
                                             formValue={form[key]} 
                                             handleChange={handleChange} 
@@ -32,7 +35,7 @@ const FormTrainingPlan = ({navigation}) => {
                     }
                     <SubmitButton 
                         bgColor={'#fab758'}
-                        submitFunc={() => postTrainingPlan(form, navigation, 'TrainingPlans')} />
+                        submitFunc={() => axiosContext.postTrainingPlan(form, navigation, 'TrainingPlans')} />
                 </View>
             </ScrollView>
         </SafeAreaView>

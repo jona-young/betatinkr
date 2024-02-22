@@ -1,29 +1,30 @@
-import { View, Text, StyleSheet, TextInput} from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native'
 
-const ExerciseTextField = ({exercise, indices, handleChange}) => {
+const ExerciseTextField = ({exercise, indices, handleChange, handleAddAllExercise}) => {
     return (
-        <View>
-            <View style={styles.exerciseBox}>
-                <Text style={styles.label}>Name:</Text>
-                <TextInput
-                    style={styles.textField}
-                    value={exercise.name}
-                    onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'name', value)}}
-                    inputMode={'text'}
-                    keyboardType={'default'} />
-            </View>
-
-            <View style={styles.exerciseUnit}>
-                <View style={Object.assign({}, styles.exerciseBox, styles.reps)}>
-                    <Text style={styles.label}>Reps:</Text>
+        <View style={styles.exerciseSeparator}>
+            <View style={styles.lineBox}>
+                <TouchableOpacity
+                    style={Object.assign({}, styles.button, {marginLeft: 30})}
+                    onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
+                    key={indices.blockIndex + indices.workoutIndex + '-' + indices.activityIndex}
+                >
+                    <Text style={styles.buttonText}>
+                    + Exercise
+                    </Text>
+                </TouchableOpacity>
+                <View style={styles.fieldBox}>
+                    <Text style={styles.label}>Name:</Text>
                     <TextInput
                         style={styles.textField}
-                        value={exercise.reps.toString()}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'reps', value)}}
-                        inputMode={'numeric'}
-                        keyboardType={'number-pad'} />
+                        value={exercise.name}
+                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'name', value)}}
+                        inputMode={'text'}
+                        keyboardType={'default'} />
                 </View>
-                <View style={Object.assign({}, styles.exerciseBoxSide, styles.sets)}>
+            </View>    
+            <View style={styles.exerciseUnit}>
+                <View style={Object.assign({}, styles.exerciseBoxSide, styles.small)}>
                     <Text style={styles.label}>Sets:</Text>
                     <TextInput
                         style={styles.textField}
@@ -32,10 +33,7 @@ const ExerciseTextField = ({exercise, indices, handleChange}) => {
                         inputMode={'numeric'}
                         keyboardType={'number-pad'} />
                 </View>
-            </View>        
-
-            <View style={styles.exerciseUnit}>
-            <View style={Object.assign({}, styles.exerciseBox, styles.intensity)}>
+                <View style={Object.assign({}, styles.exerciseBox, styles.medium)}>
                     <Text style={styles.label}>Intensity:</Text>
                     <TextInput
                         style={styles.textField}
@@ -45,7 +43,7 @@ const ExerciseTextField = ({exercise, indices, handleChange}) => {
                         keyboardType={'decimal-pad'} />
                 </View>
 
-                <View style={Object.assign({}, styles.exerciseBoxSide, styles.units)}>
+                <View style={Object.assign({}, styles.exerciseBoxSide, styles.large)}>
                     <Text style={styles.label}>Units:</Text>
                     <TextInput
                         style={styles.textField}
@@ -56,7 +54,17 @@ const ExerciseTextField = ({exercise, indices, handleChange}) => {
                 </View>
             </View>
             <View style={styles.exerciseUnit}>
-            <View style={Object.assign({}, styles.exerciseBox, styles.rest)}>
+                <View style={Object.assign({}, styles.exerciseBox, styles.small)}>
+                    <Text style={styles.label}>Reps:</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={exercise.reps.toString()}
+                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'reps', value)}}
+                        inputMode={'numeric'}
+                        keyboardType={'number-pad'} />
+                </View>
+                <View style={Object.assign({}, styles.exerciseBox, styles.medium)}>
+                
                     <Text style={styles.label}>Rest:</Text>
                     <TextInput
                         style={styles.textField}
@@ -66,7 +74,7 @@ const ExerciseTextField = ({exercise, indices, handleChange}) => {
                         keyboardType={'decimal-pad'} />
                 </View>
 
-                <View style={Object.assign({}, styles.exerciseBoxSide, styles.restUnits)}>
+                <View style={Object.assign({}, styles.exerciseBoxSide, styles.large)}>
                     <Text style={styles.label}>Rest Units:</Text>
                     <TextInput
                         style={styles.textField}
@@ -81,12 +89,43 @@ const ExerciseTextField = ({exercise, indices, handleChange}) => {
 }
 
 const styles = StyleSheet.create({
+    lineBox: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    button: {
+        borderRadius: 10,
+        backgroundColor: '#307fb0',
+        marginTop: 5,
+        marginRight: 'auto',
+        marginBottom: 5,
+        paddingTop: 7,
+        paddingBottom: 7,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    buttonText: {
+        fontFamily: 'Raleway-Regular',
+        textAlign: 'center',
+        color: 'white',
+    },
+    fieldBox: {
+        backgroundColor: 'white',
+        marginTop: 10,
+        marginRight: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingRight: 15,
+        paddingLeft: 15,
+        borderRadius: 10,
+        width: '55%'
+    },
     exerciseBox: {
         backgroundColor: 'white',
         marginTop: 10,
         marginBottom: 10,
         marginRight: 20,
-        marginLeft: 80,
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 15,
@@ -105,27 +144,25 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         borderRadius: 10,
     },
-    reps: {
-        width: '35%'
+    small: {
+        width: '20%'
     },
-    sets: {
-        width: '30%'
+    medium: {
+        width: '25%'
     },
-    intensity: {
-        width: '35%'
-    },
-    units: {
-        width: '30%'
-    },
-    rest: {
-        width: '35%'
-    },
-    restUnits: {
+    large: {
         width: '30%'
     },
     exerciseUnit: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+
+    },
+    exerciseSeparator: {
+        backgroundColor: '#b9d9ed',
+        marginBottom: 10,
+        marginTop: 10
     },
     label: {
         fontFamily: 'Raleway-Regular',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     StyleSheet,
     Text,
@@ -8,12 +8,13 @@ import {
 import TrainingSection from '../training/TrainingSection'
 import { useTrainingStore, addExercise } from '../../datastore/useTrainingStore'
 import ModalChangeSection from '../blocks/modals/ModalChangeSection'
-
+import { AxiosContext } from '../../datastore/AxiosContext'
 
 const TrainingSections = ({indices, navigation}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const section = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex].workouts[indices.workoutIndex].activities[indices.activityIndex]
-    
+    const axiosContext = useContext(AxiosContext)
+
     return (
         <View style={styles.sectionBox}>
             <TouchableOpacity 
@@ -52,6 +53,7 @@ const TrainingSections = ({indices, navigation}) => {
                             <TrainingSection
                                 exercise={exercise}
                                 indices={Object.assign({}, indices, { exerciseIndex: idx })}
+                                key={'TS1-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + indices.activityIndex + idx}
                                 navigation={navigation} />
                         )
                     })
@@ -59,7 +61,7 @@ const TrainingSections = ({indices, navigation}) => {
             </View>
             <TouchableOpacity
                 style={styles.extraBtnStyling}
-                onPress={() => addExercise(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation)} >
+                onPress={() => addExercise(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation)} >
                 <Text style={styles.addText}>
                     Add new exercise...
                 </Text>
