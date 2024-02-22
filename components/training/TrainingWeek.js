@@ -30,6 +30,7 @@ const TrainingWeek = ({ route, navigation }) => {
                                 route={'TrainingDay'} 
                                 planInfo={{info: workout}}
                                 idx={'WT'+ (idx + 1)}
+                                key={'WT'+ (idx + 1)}
                                 _iconColor={'#fab758'}
                                 supplementaryInfo={"Number of sections: " + workout.activities.length}
                                 indices={Object.assign({}, indices, {workoutIndex: idx})} />

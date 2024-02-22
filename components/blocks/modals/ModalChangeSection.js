@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { View, Text, TextInput, Modal, Pressable, StyleSheet } from 'react-native'
 import { removeActivity, handleChangeActivityName } from '../../../datastore/useTrainingStore'
+import { AxiosContext } from '../../../datastore/AxiosContext'
 
 const ModalChangeSection = ({activityName, indices, modalVisible, setModalVisible, navigation}) => {
     const [ activity, setActivity ] = useState(activityName)
-
+    const axiosContext = useContext(AxiosContext)
 
     const handleSubmit = () => {
-        handleChangeActivityName(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, activity, navigation)
+        handleChangeActivityName(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, activity, navigation)
 
         setModalVisible(!modalVisible);
     }
 
     const handleRemove = () => {
-        removeActivity(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation) 
+        removeActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation) 
 
         setModalVisible(!modalVisible);
     }

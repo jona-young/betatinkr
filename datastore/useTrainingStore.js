@@ -3,7 +3,6 @@ import _ from 'lodash'
 import { selectedDateParse, followingDatesParse, selectedDateDiffParse, followingDatesDiffParse } from '../components/helpers/adjustTrainingCycleDates';
 import { adjustMesoCycleWeeks } from '../components/helpers/adjustMesoCycleWeeks';
 import { adjustWeekWorkouts } from '../components/helpers/adjustWeekWorkouts';
-import { putTrainingPlan } from '../datahooks/useTrainingPlans'
 
 const newExercise = {name: 'New Exercise', reps: 0, sets: 0, intensity: 0.00, units: '', rest: 0, restUnits: ''}
 const newSection = {name: 'New Section', exercises: [newExercise]}
@@ -20,7 +19,7 @@ export const getPlanCopy = (indices) => {
 }
 
 // TrainingPlan -> Deload YES/NO button, adapts mesocycle deload week
-export const handleChangeDeload = (planIndex, blockIndex, navigation) => {
+export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock] 
         = dataSetChunks([planIndex, 'blocks', blockIndex])
     const deloadBool = !(trainingBlock.deload)
@@ -79,12 +78,11 @@ export const handleChangeDeload = (planIndex, blockIndex, navigation) => {
    
     useTrainingStore.setState((state) => ({ trainingPlans: updatedPlans }))
 
-    return putTrainingPlan(updatedPlans[planIndex], navigation, '#')
-
+    return axiosContext.putTrainingPlan(updatedPlans[planIndex], navigation, '#')
 }
 
 // TrainingPlan -> X Weeks, adapts number of weeks in Mesocycle
-export const handleChangeWeeks = (planIndex, blockIndex, weeks, navigation) => {
+export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock ] 
         = dataSetChunks([planIndex, 'blocks', blockIndex])
     const weekLen = trainingBlock.weeks.length
@@ -126,11 +124,11 @@ export const handleChangeWeeks = (planIndex, blockIndex, weeks, navigation) => {
     
     useTrainingStore.setState((state) => ({ trainingPlans: updatedPlans }))
 
-    return putTrainingPlan(updatedPlans[planIndex], navigation, '#')
+    return axiosContext.putTrainingPlan(updatedPlans[planIndex], navigation, '#')
 }
 
 // changes the number of workouts in a given training week
-export const handleChangeWorkouts = (planIndex, blockIndex, weekIndex, workoutNum, navigation) => {
+export const handleChangeWorkouts = (axiosContext, planIndex, blockIndex, weekIndex, workoutNum, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks] 
         = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks'])
     const workoutLen = trainingWeeks[weekIndex].workouts.length
@@ -141,13 +139,14 @@ export const handleChangeWorkouts = (planIndex, blockIndex, weekIndex, workoutNu
     const adjustedWorkouts = adjustWeekWorkouts(trainingWeeks[weekIndex].workouts, workoutDiff, deloadBool)
 
     // series of react docs array state update
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], adjustedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], adjustedWorkouts, navigation, axiosContext)
 
     return
 }
 
 // changes a workout name of a workout within a training block across all weeks
-export const handleChangeWorkoutField = (planIndex, blockIndex, workoutIndex, name, value, navigation) => {
+//CURRENTLY NOT USED, ported over from old useForm datahook...to be used soon... 
+export const handleChangeWorkoutField = (axiosContext, planIndex, blockIndex, workoutIndex, name, value, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks ] 
         = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks'])
 
@@ -163,11 +162,11 @@ export const handleChangeWorkoutField = (planIndex, blockIndex, workoutIndex, na
 
     useTrainingStore.setState((state) => ({ trainingPlans: updatedPlans }))
 
-    return putTrainingPlan(updatedPlans[planIndex], navigation, '#')
+    return axiosContext.putTrainingPlan(updatedPlans[planIndex], navigation, '#')
 }
 
 // changes the activity section name
-export const handleChangeActivityName = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, value, navigation) => {
+export const handleChangeActivityName = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, value, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks, trainingWeek, 
         trainingWorkouts, trainingWorkout, trainingActivities ] 
         = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks', templateIndex, 'workouts',
@@ -179,12 +178,12 @@ export const handleChangeActivityName = (planIndex, blockIndex, weekIndex, templ
     const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
 
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
-export const handleUpdateExercise = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, exerciseIndex, updatedExercise, navigation) => {
+export const handleUpdateExercise = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, exerciseIndex, updatedExercise, navigation) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
     if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
     when calling the function */
@@ -200,13 +199,13 @@ export const handleUpdateExercise = (planIndex, blockIndex, weekIndex, templateI
     const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
     
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
 // add a new activity section within an individual workout
-export const addActivity = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, navigation) => {
+export const addActivity = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, navigation) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
         if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
         when calling the function */
@@ -221,13 +220,13 @@ export const addActivity = (planIndex, blockIndex, weekIndex, templateIndex, wor
     const updatedWorkout = { ...trainingWorkout, ['activities']: activityList }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
     
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
 // add a new activity section within an individual workout
-export const removeActivity = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, navigation) => {
+export const removeActivity = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, navigation) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
         if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
         when calling the function */
@@ -245,12 +244,12 @@ export const removeActivity = (planIndex, blockIndex, weekIndex, templateIndex, 
     const updatedWorkout = { ...trainingWorkout, ['activities']: activityList }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
     
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
-export const addExercise = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, navigation) => {
+export const addExercise = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, navigation) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
         if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
         when calling the function */
@@ -267,12 +266,12 @@ export const addExercise = (planIndex, blockIndex, weekIndex, templateIndex, wor
     const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
     
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
-export const removeExercise = (planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, exerciseIndex, navigation) => {
+export const removeExercise = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, exerciseIndex, navigation) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
         if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
         when calling the function */
@@ -292,15 +291,13 @@ export const removeExercise = (planIndex, blockIndex, weekIndex, templateIndex, 
     const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
 
-    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation)
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
 
     return
 }
 
-// [trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks']
-
 // Reusable function to return arrays within drilled down data structure
-const updatedWeeksToPlans = (mapSet, indicesArray, fieldArray, updatedWorkouts, navigation) => {
+const updatedWeeksToPlans = (mapSet, indicesArray, fieldArray, updatedWorkouts, navigation, axiosContext) => {
     let previousDataSet
     let updatedData = updatedWorkouts
     for (let i = 0; i < mapSet.length; i++) {
@@ -310,7 +307,7 @@ const updatedWeeksToPlans = (mapSet, indicesArray, fieldArray, updatedWorkouts, 
     
     useTrainingStore.setState((state) => ({ trainingPlans: updatedData }))
 
-    return putTrainingPlan(updatedData[indicesArray[indicesArray.length - 1]], navigation, '#')
+    return axiosContext.putTrainingPlan(updatedData[indicesArray[indicesArray.length - 1]], navigation, '#')
 }
 
 // Reusable function to updated a single matching index data instance with a supplied field name and data

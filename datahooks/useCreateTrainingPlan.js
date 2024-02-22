@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-const useCreateTrainingPlan = (formData) => {
-    const [ form, setForm ] = useState( formData ? formData : { 
+const useCreateTrainingPlan = () => {
+    const [ form, setForm ] = useState({ 
         name: '',
-        startDate: '',
-        endDate: '',
+        startDate: new Date(),
+        endDate: new Date(),
         activityType: '',
         weeksPerBlock: 4,
         deloadWeek: false,

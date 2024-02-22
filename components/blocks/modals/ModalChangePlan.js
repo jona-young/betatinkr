@@ -1,23 +1,15 @@
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
-import { increment, decrement } from '../../helpers/changeCounter'
-import { handleChangeWorkouts } from '../../../datastore/useTrainingStore'
 import { AxiosContext } from '../../../datastore/AxiosContext'
 
-const ModalChangeWorkout = ({name, value, blockIndex, weekIndex, modalVisible, setModalVisible, planIndex, dataLabel, navigation}) => {
-    const [ workouts, setWorkouts ] = useState(value)
+const ModalChangePlan = ({navigation, modalVisible, setModalVisible, id, setScreenRefresh}) => {
     const axiosContext = useContext(AxiosContext)
 
-
     const handleSubmit = () => {
-      handleChangeWorkouts(axiosContext, planIndex, blockIndex, weekIndex, workouts, navigation)
-
+      axiosContext.deleteTrainingPlan(id, navigation, 'TrainingPlans')  
       setModalVisible(!modalVisible)
+      setScreenRefresh(true)
     }
-
-    useEffect(() => {
-        setWorkouts(value)
-    },[value])
 
     return (
         <Modal
@@ -30,27 +22,16 @@ const ModalChangeWorkout = ({name, value, blockIndex, weekIndex, modalVisible, s
             }}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalHeading}>{name}</Text>
-                    <Text style={styles.modalText}>{workouts + '' + (workouts > 1 ? ' ' + dataLabel + 's' : ' ' + dataLabel) }</Text>
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => increment(workouts, setWorkouts)}>
-                        <Text style={styles.textStyle}>Add {dataLabel}</Text>
-                    </Pressable>
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => decrement(workouts, setWorkouts)}>
-                        <Text style={styles.textStyle}>Remove {dataLabel}</Text>
-                    </Pressable>
+                    <Text style={styles.modalHeading}>Delete Training Plan?</Text>
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
                         onPress={() => handleSubmit()}>
-                        <Text style={styles.textStyle}>Ok</Text>
+                        <Text style={styles.textStyle}>Delete</Text>
                     </Pressable>
                     <Pressable
-                        style={[styles.button, styles.buttonClose]}
+                        style={Object.assign({}, styles.button, styles.buttonClose)}
                         onPress={() => setModalVisible(!modalVisible)}>
-                        <Text style={styles.textStyle}>Cancel</Text>
+                        <Text style={styles.textStyle}>X</Text>
                     </Pressable>
                 </View>
             </View>
@@ -110,4 +91,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default ModalChangeWorkout;
+export default ModalChangePlan;

@@ -15,7 +15,7 @@ const ListButton = ({navigation, route, planInfo, idx, _iconColor, supplementary
         <TouchableOpacity
             style={Object.assign({}, styles.boxFrame, boxShadow)}
             onPress={() => navigation.navigate(route, { indices: indices})}
-            key={idx + '--' + planInfo.name}
+            key={idx + '--LB'}
         >
             <View style={Object.assign({}, styles.iconCircle, iconColor)}>
                 <Text style={styles.iconText}>

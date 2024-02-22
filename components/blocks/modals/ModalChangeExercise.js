@@ -1,20 +1,21 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { View, Text, Modal, Pressable, StyleSheet } from 'react-native'
 import { handleUpdateExercise, removeExercise } from '../../../datastore/useTrainingStore'
 import ExerciseTextField from '../inputs/ExerciseTextField'
+import { AxiosContext } from '../../../datastore/AxiosContext'
 
 const ModalChangeExercise = ({exercise, indices, modalVisible, setModalVisible, navigation}) => {
     const [ exerciseData, setExerciseData ] = useState(exercise)
-
+    const axiosContext = useContext(AxiosContext)
 
     const handleSubmit = () => {
-        handleUpdateExercise(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, exerciseData, navigation)
+        handleUpdateExercise(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, exerciseData, navigation)
 
         setModalVisible(!modalVisible);
     }
 
     const handleRemove = () => {
-      removeExercise(indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, navigation)
+      removeExercise(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, navigation)
       
       setModalVisible(!modalVisible);
     }

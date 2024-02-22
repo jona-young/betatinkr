@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
 import { increment, decrement } from '../../helpers/changeCounter'
 import { handleChangeWeeks } from '../../../datastore/useTrainingStore'
+import { AxiosContext } from '../../../datastore/AxiosContext'
 
 const ModalChangeWeek = ({name, value, blockIndex, modalVisible, setModalVisible, planIndex, dataLabel, navigation}) => {
     const [ weeks, setWeeks ] = useState(value)
-
+    const axiosContext = useContext(AxiosContext)
     const handleSubmit = () => {
-        handleChangeWeeks(planIndex, blockIndex, weeks, navigation)
+        handleChangeWeeks(axiosContext, planIndex, blockIndex, weeks, navigation)
 
         setModalVisible(!modalVisible)
     }

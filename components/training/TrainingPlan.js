@@ -9,13 +9,10 @@ import {
 import TrainingCycleItem from '../blocks/TrainingCycleItem';
 import { useTrainingStore } from '../../datastore/useTrainingStore'
 
-
-//BRING OVER THE INDEX OF THE PLAN
 const TrainingPlan = ({route, navigation}) => {
     const { indices } = route.params
 
     const trainingPlan = useTrainingStore((state) => state.trainingPlans)[indices.planIndex]
-
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -31,7 +28,8 @@ const TrainingPlan = ({route, navigation}) => {
                         trainingPlan.blocks.map((cycle, idx) => {
                             return <TrainingCycleItem 
                                         navigation={navigation} 
-                                        cycle={cycle} 
+                                        cycle={cycle}
+                                        key={'blocks-' + indices.planIndex + idx} 
                                         indices={Object.assign({}, indices, {blockIndex: idx})} />
                         })
                     }

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import {
     TouchableOpacity,
     StyleSheet,
@@ -6,41 +6,35 @@ import {
     View,
   } from 'react-native';
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
-import { createDeloadInfo } from '../helpers/createDeloadInfo';
-import { handleChangeDeload } from '../../datastore/useTrainingStore'
-import ModalChangeWeek from './modals/ModalChangeWeek'
-import { AxiosContext } from '../../datastore/AxiosContext'
+import ModalChangePlan from './modals/ModalChangePlan'
 
-const TrainingCycleItem = ({navigation, cycle, indices}) => {
+const TrainingPlanItem = ({navigation, plan, supplementaryInfo, iconText, indices, setScreenRefresh}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
-    const deloadBox = createDeloadInfo(cycle.deload)
-    const axiosContext = useContext(AxiosContext)
 
     return (
         <View style={styles.itemBox}>
             <TouchableOpacity
                 style={Object.assign({}, styles.boxFrame, boxShadow)}
-                onPress={() => navigation.navigate("TrainingCycle", { indices: indices})}
-                key={indices.blockIndex + '-' + cycle.name}
+                onPress={() => navigation.navigate("TrainingPlan", { indices: indices})}
             >
                 <View style={styles.iconCircle}>
                     <Text style={styles.iconText}>
                         {/* icon training plan */}
-                        {indices.blockIndex + 1}
+                        {iconText}
                     </Text>
                 </View>
                 <View style={styles.textFrame}>
                     <View>
                         <Text style={styles.headerName}>
                             {/* training plan name */}
-                            {cycle.name}
+                            {plan.name}
                         </Text>
                     </View>
                     <View style={styles.headerSub}>
                         <Text style={styles.subText}>
                             {/* training plan dates or location */}
-                            {cycle.startDate + " - " + cycle.endDate}
+                            {supplementaryInfo}
                         </Text>
                     </View>
                 </View>
@@ -49,25 +43,16 @@ const TrainingCycleItem = ({navigation, cycle, indices}) => {
                 style={styles.weekBanner}
                 onPress={() => setModalVis(!modalVis)}
                 key={'wkChange-'+indices.blockIndex}>
-                <Text style={styles.weekNum}>{cycle.weeks.length}</Text>
-                <Text style={styles.weekText}>Weeks</Text>
+                <Text style={styles.weekText}>Options</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.deloadBanner}
-                onPress={() => handleChangeDeload(axiosContext, indices.planIndex, indices.blockIndex, navigation)}
-                key={'deloadBtn-'+indices.blockIndex}>
-                {deloadBox}
-            </TouchableOpacity>
-            <ModalChangeWeek 
-                name={cycle.name} 
-                value={cycle.weeks.length} 
-                blockIndex={indices.blockIndex} 
+            <ModalChangePlan 
+                navigation={navigation}
                 modalVisible={modalVis} 
                 setModalVisible={setModalVis}
-                planIndex={indices.planIndex}
-                dataLabel={'Week'}
-                navigation={navigation} />
+                id={plan.id}
+                setScreenRefresh={setScreenRefresh} />
         </View>
+        
     )
 }
 
@@ -87,6 +72,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginLeft: 10,
         marginRight: 10,
+        width: '75%'
     },
     textFrame: {
         display: 'flex',
@@ -146,38 +132,20 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
-        backgroundColor: '#3f78e0',
-        width: '16%',
-        marginLeft: 'auto'
-    },
-    weekNum: {
-        fontFamily: 'Raleway-Bold',
-        fontSize: 32,
-        textAlign: 'center',
-        paddingBottom: 3
-    },
-    weekText: {
-        fontFamily: 'Raleway-Medium',
-        fontSize: 14,
-        textAlign: 'center',
-    },
-    weekNo: {
-        fontFamily: 'Raleway-ExtraBold',
-        fontSize: 28,
-        textAlign: 'center',
-        paddingBottom: 3,
-        paddingTop: 5
-    },
-    deloadBanner: {
-        backgroundColor: '#e0e9fa',
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
-        width: '16%',
-        marginTop: 5,
-        marginBottom: 5,
-        marginRight: 10,
+        backgroundColor: '#3f78e0',
+        width: '17%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    weekText: {
+        fontFamily: 'Raleway-ExtraBold',
+        fontSize: 14,
+        textAlign: 'center',
+        color: 'white'
     }
   });
 
 
-export default TrainingCycleItem;
+export default TrainingPlanItem;

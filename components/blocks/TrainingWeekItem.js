@@ -15,7 +15,7 @@ const TrainingWeekItem = ({navigation, week, cycleStart, indices}) => {
     const weekDates = useWeekDates(cycleStart, indices.weekIndex)
 
     return (
-        <View style={styles.itemBox}>
+        <View style={styles.itemBox} key={'TWI-' + indices.planIndex + indices.blockIndex + indices.weekIndex}>
             <TouchableOpacity
                 style={Object.assign({}, styles.boxFrame, boxShadow)}
                 onPress={() => navigation.navigate("TrainingWeek", { indices: indices})}

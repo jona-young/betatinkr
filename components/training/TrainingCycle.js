@@ -36,6 +36,7 @@ const TrainingCycle = ({ route, navigation }) => {
                                         navigation={navigation} 
                                         week={microcycle}
                                         cycleStart={trainingCycle.startDate}
+                                        key={'TCI-' + indices.planIndex + indices.blockIndex + idx}
                                         indices={Object.assign({}, indices, {weekIndex: idx})} />
                             })
                         }                                                                                      
