@@ -44,7 +44,11 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
             workouts: weekWorkouts
         })
     } else {
-        blockCopy = trainingBlock.weeks.slice(0, trainingBlock.weeks.length - 1)
+        if (trainingBlock.weeks.length > 1) {
+            blockCopy = trainingBlock.weeks.slice(0, trainingBlock.weeks.length - 1)
+        } else {
+            blockCopy = trainingBlock.weeks.slice()
+        }
     }
 
     // react docs array state update
@@ -90,6 +94,7 @@ export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, na
     const deloadBool = trainingBlock.deload
     const workoutsPerWeek = trainingBlock.weeks[0].workouts.length
 
+
     // takes into account a deload week and adds or removes weeks to a mesocycle and returns array
     const adjustedMesocycle = adjustMesoCycleWeeks(trainingPlan, blockIndex, weekLen, weekDiff, deloadBool, workoutsPerWeek, newSection, weeks)
 
@@ -98,6 +103,10 @@ export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, na
         if (i == blockIndex) {
             let updatedBlock = block
             updatedBlock.weeks = adjustedMesocycle
+
+            if (weeks == 1 && deloadBool) {
+                updatedBlock.deload = !updatedBlock.deload
+            }
 
             // date parsers to transform timestamp into date with offset time according to user timezone
             updatedBlock.endDate = selectedDateDiffParse(updatedBlock.endDate, weekDiff)

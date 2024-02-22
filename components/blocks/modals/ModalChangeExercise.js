@@ -38,7 +38,8 @@ const ModalChangeExercise = ({exercise, indices, modalVisible, setModalVisible, 
                     <ExerciseTextField
                         exercise={exerciseData}
                         indices={indices}
-                        handleChange={handleChange} />
+                        handleChange={handleChange}
+                        hideAddExercise={true} />
                 </View>
                 <View style={styles.buttonOptions}>
                     <Pressable
@@ -64,10 +65,10 @@ const ModalChangeExercise = ({exercise, indices, modalVisible, setModalVisible, 
 
 const styles = StyleSheet.create({
     modalView: {
-      width: 275,
+      width: 360,
       marginTop: 150,
       marginRight: 40,
-      marginLeft: 40,
+      marginLeft: 20,
       borderRadius: 10,
       paddingTop:0,
       paddingLeft: 15,
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
       alignItems: 'start'
     },
     offsetETF: {
-        marginLeft: -80
+        marginLeft: 0,
     },
     buttonOptions: {
         display: 'flex',

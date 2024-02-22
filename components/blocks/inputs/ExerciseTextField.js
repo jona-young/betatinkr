@@ -1,18 +1,22 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native'
 
-const ExerciseTextField = ({exercise, indices, handleChange, handleAddAllExercise}) => {
+const ExerciseTextField = ({exercise, indices, handleChange, handleAddAllExercise, hideAddExercise}) => {
     return (
         <View style={styles.exerciseSeparator}>
             <View style={styles.lineBox}>
+                {hideAddExercise ? 
+                    <View style={styles.hideBtnOffset}></View>
+                :
                 <TouchableOpacity
-                    style={Object.assign({}, styles.button, {marginLeft: 30})}
-                    onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
-                    key={indices.blockIndex + indices.workoutIndex + '-' + indices.activityIndex}
-                >
-                    <Text style={styles.buttonText}>
-                    + Exercise
-                    </Text>
-                </TouchableOpacity>
+                        style={Object.assign({}, styles.button, {marginLeft: 30})}
+                        onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
+                        key={indices.blockIndex + indices.workoutIndex + '-' + indices.activityIndex}
+                    >
+                        <Text style={styles.buttonText}>
+                        + Exercise
+                        </Text>
+                    </TouchableOpacity>
+                }
                 <View style={styles.fieldBox}>
                     <Text style={styles.label}>Name:</Text>
                     <TextInput
@@ -172,6 +176,9 @@ const styles = StyleSheet.create({
     textField: {
         fontFamily: 'Raleway-Regular',
         padding: 5
+    },
+    hideBtnOffset: {
+        marginLeft: 20
     }
 })
 
