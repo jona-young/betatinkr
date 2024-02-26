@@ -1,9 +1,9 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { View, Text, Modal, Pressable, StyleSheet } from 'react-native'
 import { handleCopyWorkout } from '../../../datastore/useTrainingStore'
 import { AxiosContext } from '../../../datastore/AxiosContext'
 
-const ModalCopyWorkout = ({indices, modalVisible, setModalVisible, navigation}) => {
+const ModalCopyWorkout = ({indices, modalVisible, setModalVisible, navigation, deload, lastWeekIndex}) => {
     const axiosContext = useContext(AxiosContext)
 
     const handleSubmit = (overloadValue) => {
@@ -11,7 +11,7 @@ const ModalCopyWorkout = ({indices, modalVisible, setModalVisible, navigation}) 
 
         setModalVisible(!modalVisible);
     }
-    
+
     return (
         <Modal
             animationType="slide"
@@ -21,7 +21,7 @@ const ModalCopyWorkout = ({indices, modalVisible, setModalVisible, navigation}) 
                 Alert.alert('Modal has been closed.');
                 setModalVisible(!modalVisible);
             }}>
-                        <View style={styles.centeredView}>
+              <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.modalHeading}>Copy Workout from Last Week?</Text>
                     <Pressable
@@ -29,16 +29,38 @@ const ModalCopyWorkout = ({indices, modalVisible, setModalVisible, navigation}) 
                         onPress={() => handleSubmit(1)}>
                         <Text style={styles.textStyle}>Copy Workout</Text>
                     </Pressable>
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => handleSubmit(1.025)}>
-                        <Text style={styles.textStyle}>Copy & Add 2.5% Intensity</Text>
-                    </Pressable>
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => handleSubmit(1.05)}>
-                        <Text style={styles.textStyle}>Copy & Add 5% Intensity</Text>
-                    </Pressable>
+                    { deload && lastWeekIndex == indices.weekIndex ?
+                      <>
+                        <Pressable
+                          style={[styles.button, styles.buttonClose]}
+                          onPress={() => handleSubmit(0.25)}>
+                          <Text style={styles.textStyle}>Copy at 25% Intensity</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => handleSubmit(0.5)}>
+                            <Text style={styles.textStyle}>Copy at 50% Intensity</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => handleSubmit(0.75)}>
+                            <Text style={styles.textStyle}>Copy at 75% Intensity</Text>
+                        </Pressable>
+                      </>
+                      :
+                      <>
+                        <Pressable
+                          style={[styles.button, styles.buttonClose]}
+                          onPress={() => handleSubmit(1.025)}>
+                          <Text style={styles.textStyle}>Copy & Add 2.5% Intensity</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => handleSubmit(1.05)}>
+                            <Text style={styles.textStyle}>Copy & Add 5% Intensity</Text>
+                        </Pressable>
+                      </>
+                    }
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
                         onPress={() => setModalVisible(!modalVisible)}>

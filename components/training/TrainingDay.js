@@ -15,7 +15,11 @@ import ModalCopyWorkout from '../blocks/modals/ModalCopyWorkout';
 const TrainingDay = ({ navigation, route }) => {
     const { indices } = route.params
     const [ modalVis, setModalVis ] = useState(false)
-    const trainingDay = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex].workouts[indices.workoutIndex]
+    const trainingBlock = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex]
+    const trainingDay = trainingBlock.weeks[indices.weekIndex].workouts[indices.workoutIndex]
+    const deload = trainingBlock.deload
+    const lastWeekIndex = trainingBlock.weeks.length - 1
+
     const axiosContext = useContext(AxiosContext)
 
     return (
@@ -36,10 +40,13 @@ const TrainingDay = ({ navigation, route }) => {
                     indices={indices}
                     modalVisible={modalVis} 
                     setModalVisible={setModalVis}
-                    navigation={navigation} />
+                    navigation={navigation}
+                    deload={deload}
+                    lastWeekIndex={lastWeekIndex} />
                 </>
                 :
-                <></>
+                <View style={styles.headerSpacer}>
+                </View>
             }
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
@@ -81,6 +88,9 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         paddingLeft: 10,
+    },
+    headerSpacer: {
+        marginBottom: 10
     },
     optionBox: {
         margin: 10,

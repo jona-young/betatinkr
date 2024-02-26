@@ -30,8 +30,6 @@ const TrainingWeekItem = ({navigation, week, cycleStart, indices}) => {
         } else {
             setDateStyler(false)
         }
-
-        console.log('ok')
     },[weekDates])
 
     return (
