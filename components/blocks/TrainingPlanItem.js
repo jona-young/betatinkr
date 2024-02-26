@@ -25,9 +25,13 @@ const TrainingPlanItem = ({navigation, plan, supplementaryInfo, iconText, indice
                     </Text>
                 </View>
                 <View style={styles.textFrame}>
-                    <Text style={styles.headerName} numberOfLines={1}>
+                    <Text style={styles.headerName}>
                         {/* training plan name */}
                         {plan.name}
+                    </Text>
+                    <Text style={styles.subHeaderName} numberOfLines={1}>
+                        {/* training plan name */}
+                        Activity Type - {plan.activityType}
                     </Text>
                     <View style={styles.headerSub}>
                         <Text style={styles.subText}>
@@ -50,14 +54,13 @@ const TrainingPlanItem = ({navigation, plan, supplementaryInfo, iconText, indice
                 id={plan.id}
                 setScreenRefresh={setScreenRefresh} />
         </View>
-        
     )
 }
 
 const styles = StyleSheet.create({
     itemBox: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
     },
     boxFrame: {
         display: 'flex',
@@ -65,12 +68,12 @@ const styles = StyleSheet.create({
         alignItems: 'left',
         paddingLeft: 15,
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         marginTop: 5,
-        marginBottom: 5,
         marginLeft: 10,
         marginRight: 10,
-        width: '75%'
+        width: '95%'
     },
     textFrame: {
         display: 'flex',
@@ -90,6 +93,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#000000",
         textAlign: 'left'
+    },
+    subHeaderName: {
+        fontFamily: "Raleway-Regular>",
+        fontSize: 12,
+        color: "#000000",
+        textAlign: 'left' 
     },
     headerSub: {
         display: 'flex',
@@ -127,14 +136,15 @@ const styles = StyleSheet.create({
         color: '#ffffff'
     },  
     weekBanner: {
-        marginTop: 5,
         marginBottom: 5,
-        borderTopLeftRadius: 10,
+        marginRight: 10,
+        marginLeft: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
         borderBottomLeftRadius: 10,
-        borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         backgroundColor: '#3f78e0',
-        width: '17%',
+        width: '95%',
         display: 'flex',
         justifyContent: 'center'
     },
