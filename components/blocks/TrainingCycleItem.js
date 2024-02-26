@@ -5,6 +5,7 @@ import {
     Text,
     View,
   } from 'react-native';
+import { format, isWithinInterval } from 'date-fns'
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 import { createDeloadInfo } from '../helpers/createDeloadInfo';
 import { handleChangeDeload } from '../../datastore/useTrainingStore'
@@ -13,6 +14,11 @@ import { AxiosContext } from '../../datastore/AxiosContext'
 
 const TrainingCycleItem = ({navigation, cycle, indices}) => {
     const [ modalVis, setModalVis ] = useState(false)
+    const [ dateStyler, setDateStyler ] = useState(isWithinInterval(format(new Date(), 'yyyy-MM-dd'), {
+        start: cycle.startDate,
+        end: cycle.endDate
+    }))
+    
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
     const deloadBox = createDeloadInfo(cycle.deload)
     const axiosContext = useContext(AxiosContext)
@@ -37,8 +43,8 @@ const TrainingCycleItem = ({navigation, cycle, indices}) => {
                             {cycle.name}
                         </Text>
                     </View>
-                    <View style={styles.headerSub}>
-                        <Text style={styles.subText}>
+                    <View style={Object.assign({}, styles.headerSub, (dateStyler ? styles.dateNowBox : styles.dateBox))}>
+                        <Text style={Object.assign({}, styles.subText, (dateStyler ? styles.dateNowText : styles.dateText))}>
                             {/* training plan dates or location */}
                             {cycle.startDate + " - " + cycle.endDate}
                         </Text>
@@ -110,7 +116,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#e0e9fa',
         marginTop: 10,
         marginRight: 10,
         paddingTop: 3,
@@ -135,7 +140,18 @@ const styles = StyleSheet.create({
     subText: {
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
-        color: '#3f78e0'
+    },
+    dateText: {
+        color: "#3f78e0"
+    },
+    dateBox: {
+        backgroundColor: "#e0e9fa"
+    },
+    dateNowText: {
+        color: "#1cb044"
+    },
+    dateNowBox: {
+        backgroundColor: "#c9f5d5"
     },
     iconText: {
         fontFamily: 'Raleway-Bold',

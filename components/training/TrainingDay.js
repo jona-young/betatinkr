@@ -10,6 +10,7 @@ import {
 import { useTrainingStore, addActivity } from '../../datastore/useTrainingStore'
 import { AxiosContext } from '../../datastore/AxiosContext'
 import TrainingSections from './TrainingSections';
+import ModalCopyWorkout from '../blocks/modals/ModalCopyWorkout';
 
 const TrainingDay = ({ navigation, route }) => {
     const { indices } = route.params
@@ -24,11 +25,22 @@ const TrainingDay = ({ navigation, route }) => {
                     {trainingDay.name}
                 </Text>
             </View> 
-            <TouchableOpacity 
-                style={styles.optionBox}
-                onPress={() => setModalVis(!modalVis)}>
-                <Text style={styles.optionText}>Copy</Text>
-            </TouchableOpacity>
+            { indices.weekIndex > 0 ?
+                <>
+                    <TouchableOpacity 
+                        style={styles.optionBox}
+                        onPress={() => setModalVis(!modalVis)}>
+                        <Text style={styles.optionText}>Copy Workout from past week</Text>
+                    </TouchableOpacity>
+                    <ModalCopyWorkout 
+                    indices={indices}
+                    modalVisible={modalVis} 
+                    setModalVisible={setModalVis}
+                    navigation={navigation} />
+                </>
+                :
+                <></>
+            }
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
                 <View>
@@ -60,7 +72,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#3f78e0',
         paddingTop: 10,
         paddingBottom: 10,
-        marginBottom: 10
+        marginBottom: 0,
+        display: 'flex',
+        flexDirection: 'column'
     },
     header: {
         fontFamily: 'Raleway-Bold',
@@ -69,13 +83,11 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     optionBox: {
-        marginTop: 5,
-        marginBottom: 5,
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        backgroundColor: '#3f78e0',
-        width: '16%',
-        marginLeft: 'auto'
+        margin: 10,
+        borderRadius: 10,
+        backgroundColor: '#fab758',
+        padding: 10,
+        width: '65%'
     },
     weekNum: {
         fontFamily: 'Raleway-Bold',
@@ -87,6 +99,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Medium',
         fontSize: 14,
         textAlign: 'center',
+        color: 'white',
     },
     itemBox: {
         display: 'flex',

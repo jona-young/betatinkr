@@ -153,8 +153,76 @@ export const handleChangeWorkouts = (axiosContext, planIndex, blockIndex, weekIn
     return
 }
 
+export const handleCopyBlock = (axiosContext, planIndex, blockIndex, templateBlockIndex, navigation, Alert) => {
+    const [ trainingPlans, trainingPlan, trainingBlocks] 
+        = dataSetChunks([planIndex, 'blocks'])
+    
+    if (trainingPlan.blocks[blockIndex].weeks.length !== trainingPlan.blocks[templateBlockIndex].weeks.length) {
+        return Alert.alert('The current training block does not have the same amount of weeks as the past training block!')
+    }
+    
+    const templateWeeks = _.cloneDeep(trainingBlocks[templateBlockIndex].weeks)
+    
+    const updatedBlocks = trainingBlocks.map((block, idx) => {
+        if (idx == blockIndex) {
+            let updatedBlock = block
+            updatedBlock.weeks = templateWeeks
+
+            return updatedBlock
+        } else {
+            return block
+        }
+    })
+
+    const updatedPlans = singleStatesUpdater(trainingPlans, planIndex, 'blocks', updatedBlocks)
+
+    useTrainingStore.setState((state) => ({ trainingPlans: updatedPlans }))
+
+    return axiosContext.putTrainingPlan(updatedPlans[planIndex], navigation, '#')
+}
+
+export const handleCopyWorkout = (axiosContext, planIndex, blockIndex, weekIndex, workoutIndex, overloadValue, navigation) => {
+    const templateWeekIndex = weekIndex - 1
+    const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks, trainingWeek, 
+        trainingWorkouts, trainingWorkout ] 
+        = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks', weekIndex, 'workouts', workoutIndex])
+
+    // get workout from the week before
+    const templateActivities = _.cloneDeep(trainingWeeks[templateWeekIndex].workouts[workoutIndex].activities)
+
+    const updatedActivities = templateActivities.map((section, idx) => {
+        let updatedSection = section
+
+        // loop through exercises the the exercises' values to update depending on overload value
+        const updatedExercises = section.exercises.map((exercise) => {
+            let updatedExercise = exercise
+            updatedExercise.intensity = (updatedExercise.intensity * overloadValue).toFixed(2)
+
+            return updatedExercise
+        })
+
+        updatedSection.exercises = updatedExercises
+
+        return updatedSection
+    })
+
+    const updatedWorkouts = trainingWorkouts.map((workout, idx) => {
+        if (idx == workoutIndex) {
+            let updatedWorkout = workout
+            updatedWorkout.activities = updatedActivities
+
+            return updatedWorkout
+        } else {
+            return workout
+        }
+    })
+
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
+    
+    return
+}
+
 // changes a workout name of a workout within a training block across all weeks
-//CURRENTLY NOT USED, ported over from old useForm datahook...to be used soon... 
 export const handleChangeWorkoutField = (axiosContext, planIndex, blockIndex, workoutIndex, name, value, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks ] 
         = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks'])

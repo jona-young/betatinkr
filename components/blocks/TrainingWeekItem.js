@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     TouchableOpacity,
     StyleSheet,
@@ -8,11 +8,31 @@ import {
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 import useWeekDates from '../../datahooks/useWeekDates'
 import ModalChangeWorkout from './modals/ModalChangeWorkout'
+import { format, isWithinInterval } from 'date-fns'
+
 
 const TrainingWeekItem = ({navigation, week, cycleStart, indices}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
     const weekDates = useWeekDates(cycleStart, indices.weekIndex)
+
+    const [ dateStyler, setDateStyler ] = useState(isWithinInterval(format(new Date(), 'yyyy-MM-dd'), {
+        start: weekDates.start,
+        end: weekDates.end
+    }))
+
+    useEffect(() => {
+        if (isWithinInterval(format(new Date(), 'yyyy-MM-dd'), {
+            start: weekDates.start,
+            end: weekDates.end
+        })) {
+            setDateStyler(true)
+        } else {
+            setDateStyler(false)
+        }
+
+        console.log('ok')
+    },[weekDates])
 
     return (
         <View style={styles.itemBox} key={'TWI-' + indices.planIndex + indices.blockIndex + indices.weekIndex}>
@@ -34,8 +54,8 @@ const TrainingWeekItem = ({navigation, week, cycleStart, indices}) => {
                             {week.name}
                         </Text>
                     </View>
-                    <View style={styles.headerSub}>
-                        <Text style={styles.subText}>
+                    <View style={Object.assign({}, styles.headerSub, (dateStyler ? styles.dateNowBox : styles.dateBox))}>
+                        <Text style={Object.assign({}, styles.subText, (dateStyler ? styles.dateNowText : styles.dateText))}>
                             {/* training plan dates or location */}
                             {weekDates.start + ' - ' + weekDates.end}
                         </Text>
@@ -104,7 +124,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#e0e9fa',
         marginTop: 10,
         marginRight: 10,
         paddingTop: 3,
@@ -129,7 +148,18 @@ const styles = StyleSheet.create({
     subText: {
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
-        color: '#3f78e0'
+    },
+    dateText: {
+        color: "#3f78e0"
+    },
+    dateBox: {
+        backgroundColor: "#e0e9fa"
+    },
+    dateNowText: {
+        color: "#1cb044"
+    },
+    dateNowBox: {
+        backgroundColor: "#c9f5d5"
     },
     iconText: {
         fontFamily: 'Raleway-Bold',

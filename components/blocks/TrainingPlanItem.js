@@ -25,12 +25,10 @@ const TrainingPlanItem = ({navigation, plan, supplementaryInfo, iconText, indice
                     </Text>
                 </View>
                 <View style={styles.textFrame}>
-                    <View>
-                        <Text style={styles.headerName}>
-                            {/* training plan name */}
-                            {plan.name}
-                        </Text>
-                    </View>
+                    <Text style={styles.headerName} numberOfLines={1}>
+                        {/* training plan name */}
+                        {plan.name}
+                    </Text>
                     <View style={styles.headerSub}>
                         <Text style={styles.subText}>
                             {/* training plan dates or location */}
@@ -85,6 +83,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         paddingTop: 5,
         paddingBottom: 5,
+        width: '75%'
     },
     headerName: {
         fontFamily: "Raleway-Bold",
