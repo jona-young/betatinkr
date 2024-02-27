@@ -76,6 +76,12 @@ const Home = ({navigation}) => {
                     btnInfo={{name: 'Signup'}} 
                     bgColor={'#fab758'} 
                     extraStyling={styles.extraBtnStyling} />
+                <ButtonItem 
+                    navigation={navigation} 
+                    route={'ForgotPassword'} 
+                    btnInfo={{name: 'Forgot Password'}} 
+                    bgColor={'#de2a1d'} 
+                    extraStyling={styles.extraBtnStyling} />
             </View>
             <View style={styles.imgBox}>
                 <Image source={require('../../assets/imgs/about-img.png')}
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
         width: 'auto'
     },
     extraBtnStyling: {
-        marginTop: 20,
+        marginTop: 10,
         marginRight: 'auto',
         marginLeft: 'auto',
         width: '50%',
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     form: {
-        height: 300, 
+        height: 400, 
         width: '100%',       
         marginTop: -100,
         backgroundColor: '#e9eaf8',

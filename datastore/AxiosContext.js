@@ -20,7 +20,6 @@ const AxiosProvider = ({children}) => {
     const publicAxios = axios.create({
         baseURL: API_URL
     })
-
     authAxios.interceptors.request.use(
         config => {
           if (!config.headers.Authorization) {

@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './components/site/Home';
 import Loading from './components/site/Loading'
 import Signup from './components/site/Signup'
+import ForgotPassword from './components/site/ForgotPassword'
+import ResetPassword from './components/site/ResetPassword'
 import TrainingPlans from './components/training/TrainingPlans';
 import TrainingPlan from './components/training/TrainingPlan';
 import TrainingCycle from './components/training/TrainingCycle';
@@ -49,6 +51,8 @@ const App = () => {
         <Stack.Navigator initialRouteName="Home">
               <Stack.Screen name="Home" component={Home} options={{ title:'BetaTinkr'}} />
               <Stack.Screen name="Signup" component={Signup} options={{ title:'BetaTinkr'}} />
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title:'BetaTinkr'}} />
+              <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title:'BetaTinkr'}} />
         </Stack.Navigator>
       </NavigationContainer>
     )
