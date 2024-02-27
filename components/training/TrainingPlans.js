@@ -50,7 +50,6 @@ const TrainingPlans = ({navigation}) => {
                     btnInfo={{name: 'Add Plan'}} 
                     bgColor={'#fab758'}
                     extraStyling={styles.extraBtnStyling} />
-
                 <TouchableOpacity
                     style={styles.btnStyling}
                     onPress={() => authContext.logout()} >
