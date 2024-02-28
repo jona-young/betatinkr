@@ -1,14 +1,19 @@
-import { View, Text, StyleSheet } from 'react-native'
 import { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { parseDate } from '../../helpers/adjustTrainingCycleDates'
 
-const DatePicker = ({ label, formValue, handleChange }) => {
+const DatePicker = ({ label, fieldName, formValue, handleChange }) => {
+    const currentDate = parseDate(new Date())
+    const minEndDate = new Date().setDate(new Date().getDate() + 1)
+    const [ minDate ] = useState(fieldName == "startDate" ? parseDate(currentDate) : parseDate(minEndDate))
+    
     return (
         <View style={styles.fieldBox}>
             <Text style={styles.label}>
                 {label}
             </Text>
-            <DateTimePicker value={formValue} onChange={(event, value) => handleChange(label, value)} />
+            <DateTimePicker value={formValue} onChange={(event, value) => handleChange(fieldName, value)} minimumDate={minDate} />
          </View>
     )
 }

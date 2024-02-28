@@ -5,6 +5,7 @@ import * as Keychain from 'react-native-keychain'
 import { API_URL } from '@env'
 import { AuthContext } from './AuthContext'
 import { createTrainingCycles } from '../components/helpers/createTrainingCycles'
+import { checkWeekDifferencePerBlock } from '../components/helpers/adjustTrainingCycleDates.js'
 
 
 const AxiosContext = createContext();
@@ -78,9 +79,24 @@ const AxiosProvider = ({children}) => {
         }
     }
 
-    const postTrainingPlan = async (form, navigation, route) => {
-
+    const postTrainingPlan = async (form, navigation, route, setErrors) => {
+        setErrors({})
         try {
+            if (!checkWeekDifferencePerBlock(form.startDate, form.endDate, form.weeksPerBlock, form.deload)) {
+                setErrors({weeksPerBlock: 'Not enough weeks between the start and end dates for a training block of this many weeks!'})
+                return 
+            }
+
+            if (form.weeksPerBlock == 0) {
+                setErrors({weeksPerBlock: 'Weeks per Block cannot be set to 0!'})
+                return
+            } 
+
+            if (form.workoutsPerWeek == 0) {
+                setErrors({workoutsPerWeek: 'Workouts per Week cannot be set to 0!'})
+                return
+            }
+
             const cycles = await createTrainingCycles(form.startDate, form.endDate, form.weeksPerBlock, true, form.workoutsPerWeek)
 
             if (cycles.result == true){
@@ -93,7 +109,7 @@ const AxiosProvider = ({children}) => {
                 navigation.navigate(route)
             }
         } catch(e) {
-            console.log(e)
+            setErrors(e.response.data.errors)
         }
     }
 

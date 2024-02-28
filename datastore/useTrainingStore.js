@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import _ from 'lodash'
-import { selectedDateParse, followingDatesParse, selectedDateDiffParse, followingDatesDiffParse } from '../components/helpers/adjustTrainingCycleDates';
+import { selectedDateParse, followingDatesParse, selectedDateDiffParse, followingDatesDiffParse, formatDateAddEndDate, formatDateAddStartDate, formatDateAddStartDatePlusOne } from '../components/helpers/adjustTrainingCycleDates';
 import { adjustMesoCycleWeeks } from '../components/helpers/adjustMesoCycleWeeks';
 import { adjustWeekWorkouts } from '../components/helpers/adjustWeekWorkouts';
 
@@ -24,6 +24,8 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
         = dataSetChunks([planIndex, 'blocks', blockIndex])
     const deloadBool = !(trainingBlock.deload)
     const workoutsPerWeek = trainingBlock.weeks[0].workouts.length
+
+    console.log('BEFOsRE IT SHOULD BE 2: ', trainingBlock.weeks.length)
 
     let blockCopy = []
 
@@ -51,15 +53,26 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
         }
     }
 
+    console.log('shouldbe bsut prob is 3: ', trainingBlock.weeks.length)
+    // weekshift counter
+    let weekShiftCounter = 0
+    
     // react docs array state update
     const updatedBlocks = trainingPlan.blocks.map((block, i) => {
         if (i == blockIndex) {
+            weekShiftCounter += block.weeks.length
+
             let updatedBlock = block
             updatedBlock.weeks = blockCopy
             updatedBlock.deload = deloadBool
 
-            // date parsers to transform timestamp into date with offset time according to user timezone
-            updatedBlock.endDate = selectedDateParse(updatedBlock.endDate, deloadBool)
+            if (deloadBool) {
+                weekShiftCounter++
+            } else {
+                weekShiftCounter--
+            }
+
+            updatedBlock.endDate = formatDateAddStartDate(trainingPlan.startDate, weekShiftCounter)
 
             return updatedBlock
         // handle start/end date changes for any blocks after the block with block index was changed
@@ -67,12 +80,20 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
             let updatedBlock = block
 
             // date parsers to transform timestamp into date with offset time according to user timezone
-            const formattedDatePair = followingDatesParse(updatedBlock.startDate, updatedBlock.endDate, deloadBool)
-            updatedBlock.startDate = formattedDatePair[0]
-            updatedBlock.endDate = formattedDatePair[1]
+            // const formattedDatePair = followingDatesParse(updatedBlock.startDate, updatedBlock.endDate, deloadBool)
+            // updatedBlock.startDate = formattedDatePair[0]
+            // updatedBlock.endDate = formattedDatePair[1]
+
+            updatedBlock.startDate = formatDateAddStartDatePlusOne(trainingPlan.startDate, weekShiftCounter)
+
+            weekShiftCounter += block.weeks.length
+
+            updatedBlock.endDate = formatDateAddStartDate(trainingPlan.startDate, weekShiftCounter)
 
             return updatedBlock
         } else {
+            weekShiftCounter += block.weeks.length
+
             return block
         }
     })
@@ -94,10 +115,11 @@ export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, na
     const deloadBool = trainingBlock.deload
     const workoutsPerWeek = trainingBlock.weeks[0].workouts.length
 
-
     // takes into account a deload week and adds or removes weeks to a mesocycle and returns array
     const adjustedMesocycle = adjustMesoCycleWeeks(trainingPlan, blockIndex, weekLen, weekDiff, deloadBool, workoutsPerWeek, newSection, weeks)
 
+    // weekshift counter
+    let weekShiftCounter = 0
     // react docs array state update
     const updatedBlocks = trainingPlan.blocks.map((block, i) => {
         if (i == blockIndex) {
@@ -108,8 +130,8 @@ export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, na
                 updatedBlock.deload = !updatedBlock.deload
             }
 
-            // date parsers to transform timestamp into date with offset time according to user timezone
-            updatedBlock.endDate = selectedDateDiffParse(updatedBlock.endDate, weekDiff)
+            weekShiftCounter += weeks
+            updatedBlock.endDate = formatDateAddStartDate(trainingPlan.startDate, weekShiftCounter)
 
             return updatedBlock
 
@@ -117,13 +139,15 @@ export const handleChangeWeeks = (axiosContext, planIndex, blockIndex, weeks, na
         } else if (i > blockIndex) {
             let updatedBlock = block
 
-            // date parsers to transform timestamp into date with offset time according to user timezone
-            const formattedDatePair = followingDatesDiffParse(updatedBlock.startDate, updatedBlock.endDate, weekDiff)
-            updatedBlock.startDate = formattedDatePair[0]
-            updatedBlock.endDate = formattedDatePair[1]
+            updatedBlock.startDate = formatDateAddStartDatePlusOne(trainingPlan.startDate, weekShiftCounter)
+
+            weekShiftCounter += block.weeks.length
+
+            updatedBlock.endDate = formatDateAddStartDate(trainingPlan.startDate, weekShiftCounter)
 
             return updatedBlock
         } else {
+            weekShiftCounter += block.weeks.length
             return block
         }
     })

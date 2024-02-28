@@ -1,19 +1,28 @@
 import { useState } from 'react';
+import { parseDate } from '../components/helpers/adjustTrainingCycleDates'
 
-const useCreateTrainingPlan = () => {
+const useCreateTrainingPlan = (minimumDate) => {
     const [ form, setForm ] = useState({ 
         name: '',
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: parseDate(new Date),
+        endDate: new Date(minimumDate),
         activityType: '',
-        weeksPerBlock: 4,
+        weeksPerBlock: 0,
         deloadWeek: false,
-        workoutsPerWeek: 3,
+        workoutsPerWeek: 0,
         blocks: []
     });
 
     const handleChange = (name, value) => {
-        setForm({...form, [name]: value})
+        if (name == 'weeksPerBlock' || name == 'workoutsPerWeek') {
+            if (Number.isNaN(parseFloat(value))) {
+                setForm({...form, [name]: 0})
+            } else {
+                setForm({...form, [name]: parseInt(value)})
+            }
+        } else {
+            setForm({...form, [name]: value})
+        }
     }
 
     // Changes form on FormTrainingPlan which is a precursor to set deload weeks for all macrocycles

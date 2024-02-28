@@ -1,19 +1,29 @@
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 
-const InputField = ({ label, formValue, handleChange, inputMode, keyboardType}) => {
-
+const InputField = ({ label, fieldName, formValue, handleChange, inputMode, keyboardType, error}) => {
     return (
-        <View style={styles.fieldBox}>
-            <Text style={styles.label}>
-                {label}
-            </Text>
-            <TextInput
-                style={styles.textField}
-                value={formValue}
-                onChangeText={(value) => { handleChange(label, value)}}
-                inputMode={inputMode}
-                keyboardType={keyboardType} />
-         </View>
+        <>
+            <View style={styles.fieldBox}>
+                <Text style={styles.label}>
+                    {label}
+                </Text>
+                <TextInput
+                    style={styles.textField}
+                    value={formValue}
+                    onChangeText={(value) => { handleChange(fieldName, value)}}
+                    inputMode={inputMode}
+                    keyboardType={keyboardType} />
+            </View>
+            { error ?
+                <View style={styles.indentMargin}>
+                    <Text style={styles.errorLabel}>
+                        {error}
+                    </Text>
+                </View>
+            :
+                <View></View>
+            }
+        </>   
     )
 }
 
@@ -34,6 +44,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
         color: "#575757"
+    },
+    indentMargin: {
+        marginLeft: 20
+    }, 
+    errorLabel: {
+        fontFamily: 'Raleway-Regular',
+        fontSize: 12,
+        color: "#de2a1d"
     },
     textField: {
         fontFamily: 'Raleway-Regular',

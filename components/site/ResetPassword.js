@@ -1,7 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Text, View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Image, Alert } from 'react-native'
-import * as Keychain from 'react-native-keychain'
-import { AuthContext } from '../../datastore/AuthContext'
+import { Text, View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
 import { AxiosContext } from '../../datastore/AxiosContext'
 import { bgColorSet } from '../helpers/colorSet';
 
@@ -15,13 +13,15 @@ const ResetPassword = ({navigation, route}) => {
     const [ password, setPassword] = useState()
     const [ confirmPassword, setConfirmPassword] = useState()
 
+    const [ errors, setErrors ] = useState({})
 
     const {publicAxios} = useContext(AxiosContext);
-    const authContext = useContext(AuthContext)
 
     const handleResetPassword = async () => {
+        setErrors({})
+
         if (password !== confirmPassword) {
-            Alert.alert('Passwords do not match')
+            setErrors({resetCode: '', password: 'Passwords do not match!', confirmPassword: 'Passwords do not match!'})
             return
         }
 
@@ -30,8 +30,7 @@ const ResetPassword = ({navigation, route}) => {
         
             navigation.navigate('Home')
         } catch (err) {
-            console.log(err)
-            Alert.alert('Password Reset Error')
+            setErrors(err.response.data)
         }
     }
 
@@ -54,7 +53,7 @@ const ResetPassword = ({navigation, route}) => {
                         <Text style={styles.textField}>
                             {email}
                         </Text>
-                    </View>
+                    </View>  
                     <View style={styles.fieldBox}>
                         <Text style={styles.label}>
                             Verification Code
@@ -66,6 +65,9 @@ const ResetPassword = ({navigation, route}) => {
                             inputMode="text"
                             keyboardType="email-address" />
                     </View>
+                    <Text style={styles.errorLabel}>
+                        {errors.resetCode}
+                    </Text>  
                     <View style={styles.fieldBox}>
                         <Text style={styles.label}>
                             Enter Password
@@ -78,6 +80,9 @@ const ResetPassword = ({navigation, route}) => {
                             inputMode="text"
                             keyboardType="email-address" />
                     </View>
+                    <Text style={styles.errorLabel}>
+                        {errors.password}
+                    </Text>  
                     <View style={styles.fieldBox}>
                         <Text style={styles.label}>
                             Confirm Password
@@ -90,6 +95,9 @@ const ResetPassword = ({navigation, route}) => {
                             inputMode="text"
                             keyboardType="email-address" />
                     </View>
+                    <Text style={styles.errorLabel}>
+                        {errors.confirmPassword}
+                    </Text> 
                     <TouchableOpacity
                         style={Object.assign({}, styles.btnStyling, iconColor)}
                         onPress={() => handleResetPassword()} >
@@ -163,6 +171,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
         color: "#575757"
+    },
+    errorLabel: {
+        fontFamily: 'Raleway-Regular',
+        fontSize: 12,
+        color: "#de2a1d"
     },
     textField: {
         fontFamily: 'Raleway-Regular',
