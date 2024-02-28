@@ -24,25 +24,26 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: 10,
         marginBottom: 10,
-        marginRight: 20,
-        marginLeft: 20,
         paddingTop: 10,
         paddingBottom: 10,
-        paddingRight: 15,
-        paddingLeft: 15,
+        paddingRight: 10,
+        paddingLeft: 10,
         borderRadius: 10,
     },
     label: {
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
-        color: "#575757"
+        color: "#575757",
+        textAlign: 'center'
     },
     button: {
         backgroundColor: '#3f78e0',
         borderRadius: 5,
-        width: 50,
+        width: 35,
         height: 25,
-        marginTop: 5
+        marginTop: 5,
+        marginLeft: 'auto',
+        marginRight: 'auto'
     },  
     RalewayBold: {
         fontFamily: "Raleway-Bold",

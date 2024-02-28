@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react'
 import { Text, View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Image, Alert } from 'react-native'
-import { AuthContext } from '../../datastore/AuthContext'
 import { AxiosContext } from '../../datastore/AxiosContext'
 import { bgColorSet } from '../helpers/colorSet';
 
@@ -8,17 +7,20 @@ import { bgColorSet } from '../helpers/colorSet';
 const ForgotPassword = ({navigation}) => {
     const iconColor = bgColorSet("#747ed1")
     const [ email, setEmail] = useState()
+    const [ errors, setErrors ] = useState({})
+
 
     const {publicAxios} = useContext(AxiosContext);
 
     const handleForgotPassword = async () => {
+        setErrors({})
+
         try {
             await publicAxios.post('forgot-password', { email })
 
             navigation.navigate('ResetPassword', { _email: email})
         } catch (err) {
-            console.log(err)
-            Alert.alert('Password Reset Error')
+            setErrors(err.response.data)
         }
     }
 
@@ -39,12 +41,16 @@ const ForgotPassword = ({navigation}) => {
                             Email
                         </Text>
                         <TextInput
+                            autoCapitalize={'none'}
                             style={styles.textField}
                             value={email}
                             onChangeText={(value) => { setEmail(value)}}
                             inputMode="text"
                             keyboardType="email-address" />
                     </View>
+                    <Text style={styles.errorLabel}>
+                        {errors.email}
+                    </Text>     
                     <TouchableOpacity
                         style={Object.assign({}, styles.btnStyling, iconColor)}
                         onPress={() => handleForgotPassword()} >
@@ -118,6 +124,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
         color: "#575757"
+    },
+    errorLabel: {
+        fontFamily: 'Raleway-Regular',
+        fontSize: 12,
+        color: "#de2a1d"
     },
     textField: {
         fontFamily: 'Raleway-Regular',

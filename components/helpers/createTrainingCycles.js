@@ -1,4 +1,4 @@
-import { parse, addWeeks, subDays, isBefore, format} from 'date-fns';
+import { addWeeks, subDays, isBefore, format} from 'date-fns';
 
 export const createTrainingCycles = async (_startDate, _endDate, weeksPerBlock, deload, workoutsPerWeek) => {
     // let start = parse(_startDate, "yyyy-MM-dd", new Date())

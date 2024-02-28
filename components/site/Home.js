@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Text, View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Image, Alert } from 'react-native'
+import { Text, View, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Image } from 'react-native'
 import * as Keychain from 'react-native-keychain'
 import { AuthContext } from '../../datastore/AuthContext'
 import {AxiosContext} from '../../datastore/AxiosContext'
@@ -11,10 +11,12 @@ const Home = ({navigation}) => {
     const iconColor = bgColorSet("#747ed1")
     const [ email, setEmail] = useState()
     const [ password, setPassword ] = useState()
+    const [ errors, setErrors ] = useState({})
     const {publicAxios} = useContext(AxiosContext);
     const authContext = useContext(AuthContext)
 
     const handleLogin = async () => {
+        setErrors({})
         try {
             const response = await publicAxios.post('login', { email, password})
 
@@ -24,8 +26,11 @@ const Home = ({navigation}) => {
 
             await Keychain.setGenericPassword('token', JSON.stringify({accessToken, refreshToken}))
         } catch (err) {
-            console.log(err)
-            Alert.alert('Login Unsuccessful')
+            if (err.response.data.errors) {
+                setErrors(err.response.data.errors)
+            } else {
+                setErrors(err.response.data)
+            } 
         }
     }
 
@@ -45,12 +50,16 @@ const Home = ({navigation}) => {
                         Email
                     </Text>
                     <TextInput
+                        autoCapitalize={'none'}
                         style={styles.textField}
                         value={email}
                         onChangeText={(value) => { setEmail(value)}}
                         inputMode="text"
                         keyboardType="email-address" />
                 </View>
+                <Text style={styles.errorLabel}>
+                    {errors.email}
+                </Text>              
                 <View style={styles.fieldBox}>  
                     <Text style={styles.label}>
                         Password
@@ -63,6 +72,9 @@ const Home = ({navigation}) => {
                         inputMode="text"
                         keyboardType="default" />
                 </View>
+                <Text style={styles.errorLabel}>
+                    {errors.password}
+                </Text>  
                 <TouchableOpacity
                     style={Object.assign({}, styles.btnStyling, iconColor)}
                     onPress={() => handleLogin()} >
@@ -170,6 +182,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         fontSize: 12,
         color: "#575757"
+    },
+    errorLabel: {
+        fontFamily: 'Raleway-Regular',
+        fontSize: 12,
+        color: "#de2a1d"
     },
     textField: {
         fontFamily: 'Raleway-Regular',
