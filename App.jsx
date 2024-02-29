@@ -42,37 +42,71 @@ const App = () => {
       loadJWT(setStatus)
   },[loadJWT])
 
-  if (status == 'loading')
-  {
-    <Loading />
-  } else if (authenticated == false) {
-    return (
+  return (
+    <>
+      { status == "loading" ?
+      <Loading />
+      :
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-              <Stack.Screen name="Home" component={Home} options={{ title:'BetaTinkr'}} />
-              <Stack.Screen name="Signup" component={Signup} options={{ title:'BetaTinkr'}} />
-              <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title:'BetaTinkr'}} />
-              <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title:'BetaTinkr'}} />
+        { !authenticated ?
+          <>
+            <Stack.Screen name="Home" component={Home} options={{ title:'BetaTinkr'}} />
+            <Stack.Screen name="Signup" component={Signup} options={{ title:'BetaTinkr'}} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title:'BetaTinkr'}} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title:'BetaTinkr'}} />
+          </>
+          :
+          <>
+            <Stack.Screen name="TrainingPlans" component={TrainingPlans} options={{ title:'Training Plans'}} />
+            <Stack.Screen name="TrainingPlan" component={TrainingPlan} options={{ title:'Training Plan'}} />
+            <Stack.Screen name="TrainingCycle" component={TrainingCycle} options={{ title:'Training Cycle'}} />
+            <Stack.Screen name="TrainingWeek" component={TrainingWeek} options={{ title:'Training Week'}} />
+            <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
+            <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
+            <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
+          </>
+        }
         </Stack.Navigator>
       </NavigationContainer>
-    )
-  } else {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="TrainingPlans">
-              <Stack.Screen name="TrainingPlans" component={TrainingPlans} options={{ title:'Training Plans'}} />
-              <Stack.Screen name="TrainingPlan" component={TrainingPlan} options={{ title:'Training Plan'}} />
-              <Stack.Screen name="TrainingCycle" component={TrainingCycle} options={{ title:'Training Cycle'}} />
-              <Stack.Screen name="TrainingWeek" component={TrainingWeek} options={{ title:'Training Week'}} />
-              <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
-              <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
-              <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    )
-  }
+
+      }
+    </>
+
+  )
+
+
+//   if (status == 'loading')
+//   {
+//     return <Loading />
+//   } else if (authenticated == false) {
+//     return (
+//       <NavigationContainer>
+//         <Stack.Navigator initialRouteName="Home">
+//               <Stack.Screen name="Home" component={Home} options={{ title:'BetaTinkr'}} />
+//               <Stack.Screen name="Signup" component={Signup} options={{ title:'BetaTinkr'}} />
+//               <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title:'BetaTinkr'}} />
+//               <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title:'BetaTinkr'}} />
+//         </Stack.Navigator>
+//       </NavigationContainer>
+//     )
+//   } else {
+//     return (
+//       <NavigationContainer>
+//         <Stack.Navigator initialRouteName="TrainingPlans">
+//               <Stack.Screen name="TrainingPlans" component={TrainingPlans} options={{ title:'Training Plans'}} />
+//               <Stack.Screen name="TrainingPlan" component={TrainingPlan} options={{ title:'Training Plan'}} />
+//               <Stack.Screen name="TrainingCycle" component={TrainingCycle} options={{ title:'Training Cycle'}} />
+//               <Stack.Screen name="TrainingWeek" component={TrainingWeek} options={{ title:'Training Week'}} />
+//               <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
+//               <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
+//               <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
+//         </Stack.Navigator>
+//       </NavigationContainer>
+//     )
+//   }
+// }
+
 }
-
-
 
 export default App;
