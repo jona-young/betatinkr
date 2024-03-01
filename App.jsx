@@ -36,7 +36,7 @@ const App = () => {
 
       authContext.resetTokens()
     }
-  }, [authContext.authData.accessToken])
+  }, [])
 
   useEffect(() => {
       loadJWT(setStatus)

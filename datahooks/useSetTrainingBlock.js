@@ -94,6 +94,30 @@ const useSetTrainingBlock = (formData) => {
         setForm({...form, blocks: updatedBlocks})
     }
 
+    const removeActivity = (blockIndex, workoutIdx, weekIndex, templateIndex, activityIndex) => {
+        /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
+            if attempting to update an individual activity within a single workout, set templateIndex=weekIndex */
+        let newActivityList = []
+        form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIdx].activities.map((activity, idx) => {
+            if (idx !== activityIndex) {
+                newActivityList.push(activity)
+            }
+        })
+
+        console.log(newActivityList)
+
+        const updatedWorkout = { ...form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIdx], 
+                                ['activities']: newActivityList}
+
+        const updatedWorkouts = workoutsUpdater(blockIndex, templateIndex, workoutIdx, updatedWorkout)
+
+        const updatedWeeks = weeksUpdater(blockIndex, weekIndex, updatedWorkouts)
+
+        const updatedBlocks = blocksUpdater(blockIndex, updatedWeeks)
+
+        setForm({...form, blocks: updatedBlocks})
+    }
+
     // addExercise
     const addExercise = (blockIndex, workoutIndex, activitiesIndex, weekIndex, templateIndex) => {
         /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
@@ -103,6 +127,34 @@ const useSetTrainingBlock = (formData) => {
             newExerciseList.push(exercise)
         })
         newExerciseList.push({name: 'New Exercise', reps: 0, sets: 0, intensity: 0.00, units: '', rest: 0, restUnits: ''})
+
+        const updatedActivity = { ...form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIndex].activities[activitiesIndex],
+                                        ['exercises']: newExerciseList}
+
+        const updatedActivities = activitiesUpdater(blockIndex, templateIndex, workoutIndex, activitiesIndex, updatedActivity)
+
+        const updatedWorkout = { ...form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIndex], 
+                                ['activities']: updatedActivities}
+
+        const updatedWorkouts = workoutsUpdater(blockIndex, templateIndex, workoutIndex, updatedWorkout)
+
+        const updatedWeeks = weeksUpdater(blockIndex, weekIndex, updatedWorkouts)
+
+        const updatedBlocks = blocksUpdater(blockIndex, updatedWeeks)
+
+        setForm({...form, blocks: updatedBlocks})
+    }
+
+    // removeExercise
+    const removeExercise = (blockIndex, workoutIndex, activitiesIndex, weekIndex, templateIndex, exerciseIndex) => {
+        /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
+            if attempting to update an individual activity within a single workout, set templateIndex=weekIndex */
+        let newExerciseList = []
+        form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIndex].activities[activitiesIndex].exercises.map((exercise, idx) => {
+            if (idx !== exerciseIndex) {
+                newExerciseList.push(exercise)
+            }
+        })
 
         const updatedActivity = { ...form.blocks[blockIndex].weeks[templateIndex].workouts[workoutIndex].activities[activitiesIndex],
                                         ['exercises']: newExerciseList}
@@ -138,10 +190,26 @@ const useSetTrainingBlock = (formData) => {
             addActivity(blockIndex, workoutIndex, i, 0)
         }
     }
+
+    const handleRemoveAllActivity = (blockIndex, workoutIndex, activityIndex) => {
+        if (form.blocks[blockIndex].weeks[0].workouts[workoutIndex].activities.length > 1) {
+            for (var i = 0; i < form.blocks[blockIndex].weeks.length; i++) {
+                removeActivity(blockIndex, workoutIndex, i, 0, activityIndex)
+            }
+        }
+    }
     
     const handleAddAllExercise = (blockIndex, workoutIndex, activitiesIndex) => {
         for (var i = 0; i < form.blocks[blockIndex].weeks.length; i++) {
             addExercise(blockIndex, workoutIndex, activitiesIndex, i, 0)
+        }
+    }
+
+    const handleRemoveAllExercise = (blockIndex, workoutIndex, activitiesIndex, exerciseIndex) => {
+        if (form.blocks[blockIndex].weeks[0].workouts[workoutIndex].activities[activitiesIndex].exercises.length > 1) {
+            for (var i = 0; i < form.blocks[blockIndex].weeks.length; i++) {
+                removeExercise(blockIndex, workoutIndex, activitiesIndex, i, 0, exerciseIndex)
+            }
         }
     }
 
@@ -210,11 +278,15 @@ const useSetTrainingBlock = (formData) => {
         handleChangeActivity,
         handleChangeExercise,
         addActivity,
+        removeActivity,
         addExercise,
+        removeExercise,
         handleChangeAllActivities,
         handleChangeAllExercises,
         handleAddAllActivity,
-        handleAddAllExercise
+        handleRemoveAllActivity,
+        handleAddAllExercise,
+        handleRemoveAllExercise
     }
 }
 

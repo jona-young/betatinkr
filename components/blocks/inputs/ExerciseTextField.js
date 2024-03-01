@@ -1,21 +1,37 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native'
 
-const ExerciseTextField = ({exercise, indices, handleChange, handleAddAllExercise, hideAddExercise}) => {
+const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handleAddAllExercise, hideAddExercise, handleRemoveAllExercise}) => {
+    exercise.name == "Reverse Wrist Curls" ? console.log(indices.exerciseIndex) : ""
     return (
         <View style={styles.exerciseSeparator}>
             <View style={styles.lineBox}>
                 {hideAddExercise ? 
                     <View style={styles.hideBtnOffset}></View>
                 :
-                <TouchableOpacity
-                        style={Object.assign({}, styles.button, {marginLeft: 30})}
+                <>
+                    { lastExercise ?
+                        <TouchableOpacity
+                        style={Object.assign({}, styles.button, {marginLeft: 30, marginRight: -15})}
                         onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
-                        key={indices.blockIndex + indices.workoutIndex + '-' + indices.activityIndex}
                     >
                         <Text style={styles.buttonText}>
-                        + Exercise
+                        +
                         </Text>
                     </TouchableOpacity>
+                    :
+                    <View style={{marginLeft: 40}}></View>
+                        
+                    }
+                    
+                        <TouchableOpacity
+                        style={Object.assign({}, styles.button, {marginLeft: 30})}
+                        onPress={() => handleRemoveAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex)}
+                        >
+                            <Text style={styles.buttonText}>
+                            -
+                            </Text>
+                        </TouchableOpacity>
+                    </>
                 }
                 <View style={styles.fieldBox}>
                     <Text style={styles.label}>Name:</Text>
@@ -113,6 +129,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Raleway-Regular',
         textAlign: 'center',
         color: 'white',
+        fontSize: 16
     },
     fieldBox: {
         backgroundColor: 'white',

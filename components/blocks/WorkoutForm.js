@@ -4,7 +4,7 @@ import ActivitiesForm from './ActivitiesForm'
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
 
 
-const WorkoutForm = ({workout, indices, handleChangeWorkoutField, handleAddAllActivity, handleAddAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
+const WorkoutForm = ({workout, indices, handleChangeWorkoutField, handleAddAllActivity, handleRemoveAllActivity, handleAddAllExercise, handleRemoveAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
 
         return (
@@ -18,10 +18,14 @@ const WorkoutForm = ({workout, indices, handleChangeWorkoutField, handleAddAllAc
                     keyboardType={'default'} />
                 { Object.entries(workout.activities).map(([key, value], idx) => {
                         return <ActivitiesForm 
+                                    key={value + ' -- ' + idx}
                                     activities={value} 
+                                    lastActivity={idx == workout.activities.length - 1 ? true : false}
                                     indices={Object.assign({}, indices, { activityIndex: idx})}
                                     handleAddAllActivity={handleAddAllActivity}
+                                    handleRemoveAllActivity={handleRemoveAllActivity}
                                     handleAddAllExercise={handleAddAllExercise}
+                                    handleRemoveAllExercise={handleRemoveAllExercise}
                                     handleChangeAllActivities={handleChangeAllActivities}
                                     handleChangeAllExercises={handleChangeAllExercises} />
                     })
