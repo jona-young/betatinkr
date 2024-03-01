@@ -7,7 +7,6 @@ import BoolButton from './BoolButton';
 import InputField from './InputField';
 
 const TrainingWeeks = ({weeksPerBlock, deload, workoutsPerWeek, handleChange, handleChangeDeloadWeek, errorWeeks, errorWorkouts}) => {
-    console.log(deload)
     return (
         <>
             <View style={styles.weekRow}>

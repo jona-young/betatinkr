@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import ExerciseTextField from './inputs/ExerciseTextField'
 
-const ActivitiesForm = ({activities, indices, handleAddAllActivity, handleAddAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
+const ActivitiesForm = ({activities, lastActivity, indices, handleAddAllActivity, handleRemoveAllActivity, handleAddAllExercise, handleRemoveAllExercise, handleChangeAllActivities, handleChangeAllExercises}) => {
     const handleChange = (planIndex, blockIndex, workoutIndex, activityIndex, exerciseIndex, name, value) => {
         handleChangeAllExercises(blockIndex, workoutIndex, activityIndex, exerciseIndex, name, value)
     }
@@ -10,12 +10,24 @@ const ActivitiesForm = ({activities, indices, handleAddAllActivity, handleAddAll
     return (
         <>
             <View style={styles.lineBox}>
-                <TouchableOpacity
+                { lastActivity ?
+                    <TouchableOpacity
                     style={Object.assign({}, styles.button, {marginLeft: 20})}
                     onPress={() => handleAddAllActivity(indices.blockIndex, indices.workoutIndex)}
+                    >
+                        <Text style={styles.buttonText}>
+                            +
+                        </Text>
+                    </TouchableOpacity>
+                    :
+                    <View style={{marginLeft: 50}}></View>
+                }
+                <TouchableOpacity
+                    style={Object.assign({}, styles.button, {marginLeft: 20})}
+                    onPress={() => handleRemoveAllActivity(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
                 >
                     <Text style={styles.buttonText}>
-                        + Section
+                        -
                     </Text>
                 </TouchableOpacity>
                 <View style={styles.fieldBox}>
@@ -35,9 +47,11 @@ const ActivitiesForm = ({activities, indices, handleAddAllActivity, handleAddAll
                     <ExerciseTextField 
                         key={'EXT-' + indices.planIndex + indices.blockIndex + indices.workoutIndex + indices.activityIndex + idx}
                         exercise={exercise} 
+                        lastExercise={idx == activities.exercises.length - 1 ? true : false}
                         indices={Object.assign({}, indices, { exerciseIndex: idx })} 
                         handleChange={handleChange}
-                        handleAddAllExercise={handleAddAllExercise} />
+                        handleAddAllExercise={handleAddAllExercise}
+                        handleRemoveAllExercise={handleRemoveAllExercise} />
                 )
                 })
             }
