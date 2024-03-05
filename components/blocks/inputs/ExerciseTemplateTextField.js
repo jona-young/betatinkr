@@ -1,17 +1,18 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native'
 
-const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handleAddAllExercise, hideAddExercise, handleRemoveAllExercise}) => {
+const ExerciseTemplateTextField = ({exercise, lastExercise, hideAddExercise, indices, handleChangeExercise, addExercise, removeExercise}) => {
     return (
         <View style={styles.exerciseSeparator}>
             <View style={styles.lineBox}>
+
                 {hideAddExercise ? 
                     <View style={styles.hideBtnOffset}></View>
                 :
                 <>
                     { lastExercise ?
-                        <TouchableOpacity
+                    <TouchableOpacity
                         style={Object.assign({}, styles.button, {marginLeft: 30, marginRight: -15})}
-                        onPress={() => handleAddAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex)}
+                        onPress={() => addExercise(indices.activityIndex)}
                     >
                         <Text style={styles.buttonText}>
                         +
@@ -22,22 +23,23 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                         
                     }
                     
-                        <TouchableOpacity
-                        style={Object.assign({}, styles.button, {marginLeft: 30})}
-                        onPress={() => handleRemoveAllExercise(indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex)}
-                        >
-                            <Text style={styles.buttonText}>
-                            -
-                            </Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity
+                    style={Object.assign({}, styles.button, {marginLeft: 30})}
+                    onPress={() => removeExercise(indices.activityIndex, indices.exerciseIndex)}
+                    >
+                        <Text style={styles.buttonText}>
+                        -
+                        </Text>
+                    </TouchableOpacity>
                 </>
                 }
+
                 <View style={styles.fieldBox}>
                     <Text style={styles.label}>Name:</Text>
                     <TextInput
                         style={styles.textField}
                         value={exercise.name}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'name', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'name', value)}}
                         inputMode={'text'}
                         keyboardType={'default'} />
                 </View>
@@ -48,7 +50,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.sets.toString()}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'sets', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'sets', value)}}
                         inputMode={'numeric'}
                         keyboardType={'number-pad'} />
                 </View>
@@ -57,7 +59,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.intensity.toString()}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'intensity', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'intensity', value)}}
                         inputMode={'decimal'}
                         keyboardType={'decimal-pad'} />
                 </View>
@@ -67,7 +69,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.units}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'units', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'units', value)}}
                         inputMode={'text'}
                         keyboardType={'default'} />
                 </View>
@@ -78,7 +80,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.reps.toString()}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'reps', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'reps', value)}}
                         inputMode={'numeric'}
                         keyboardType={'number-pad'} />
                 </View>
@@ -88,7 +90,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.rest.toString()}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'rest', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'rest', value)}}
                         inputMode={'decimal'}
                         keyboardType={'decimal-pad'} />
                 </View>
@@ -98,7 +100,7 @@ const ExerciseTextField = ({exercise, lastExercise, indices, handleChange, handl
                     <TextInput
                         style={styles.textField}
                         value={exercise.restUnits}
-                        onChangeText={(value) => { handleChange(indices.planIndex, indices.blockIndex, indices.workoutIndex, indices.activityIndex, indices.exerciseIndex, 'restUnits', value)}}
+                        onChangeText={(value) => { handleChangeExercise(indices.activityIndex, indices.exerciseIndex, 'restUnits', value)}}
                         inputMode={'text'}
                         keyboardType={'default'} />
                 </View>
@@ -198,4 +200,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ExerciseTextField
+export default ExerciseTemplateTextField

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
-import ModalChangeExercise from '../blocks/modals/ModalChangeExercise'
+import ModalChangeTemplateExercise from '../blocks/modals/ModalChangeTemplateExercise'
 
-const TrainingSection = ({ exercise, indices, navigation }) => {
+const ExerciseTemplate = ({ exercise, indices, navigation }) => {
     const [ modalVis, setModalVis ] = useState(false)
 
     return (
@@ -26,7 +26,7 @@ const TrainingSection = ({ exercise, indices, navigation }) => {
                     {exercise.rest + exercise.restUnits}
                 </Text>
             </View>
-            <ModalChangeExercise 
+            <ModalChangeTemplateExercise 
             exercise={exercise}
             indices={indices}
             modalVisible={modalVis} 
@@ -78,4 +78,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default TrainingSection;
+export default ExerciseTemplate;

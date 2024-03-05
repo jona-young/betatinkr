@@ -137,6 +137,56 @@ const AxiosProvider = ({children}) => {
         }
     }
 
+    const postActivityTemplate = async (form, navigation, route, setErrors) => {
+        setErrors({})
+        try {
+            //error checking logic
+
+            const response = await authAxios.post('activity-template', form)
+
+            if (response) {
+                navigation.navigate(route)
+            }
+        } catch(e) {
+            setErrors(e.response.data.errors)
+        }
+    }
+
+    const getActivityTemplates = async (setActivityTemplates) => {
+        try {
+            const response = await authAxios.get('user-activity-templates')
+
+            setActivityTemplates(response.data)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
+
+    const putActivityTemplate = async (updatedActivity, activityIndex, navigation, route) => {
+        try {
+            const response = await authAxios.put('activity-template/' + activityIndex, updatedActivity)
+    
+            if (response) {
+                navigation.navigate(route)
+            }
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
+    const deleteActivityTemplate = async (id, navigation, route) => {
+        try {
+            const response = await authAxios.put('delete-activity-template', {id: id})
+    
+            if (response) {
+                navigation.navigate(route)
+            }
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
     return (
         <Provider
           value={{
@@ -145,7 +195,11 @@ const AxiosProvider = ({children}) => {
             getUserTrainingPlans,
             postTrainingPlan,
             putTrainingPlan,
-            deleteTrainingPlan
+            deleteTrainingPlan,
+            postActivityTemplate,
+            getActivityTemplates,
+            putActivityTemplate,
+            deleteActivityTemplate
           }}>
           {children}
         </Provider>

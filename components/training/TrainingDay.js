@@ -11,14 +11,15 @@ import { useTrainingStore, addActivity } from '../../datastore/useTrainingStore'
 import { AxiosContext } from '../../datastore/AxiosContext'
 import TrainingSections from './TrainingSections';
 import ModalCopyWorkout from '../blocks/modals/ModalCopyWorkout';
+import ModalLoadNewSection from '../blocks/modals/ModalLoadNewSection';
+
 
 const TrainingDay = ({ navigation, route }) => {
     const { indices } = route.params
-    const [ modalVis, setModalVis ] = useState(false)
+    const [ modalCopyWorkout, setModalCopyWorkout ] = useState(false)
+    const [ modalLoadSection, setModalLoadSection ] = useState(false)
     const trainingBlock = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex]
     const trainingDay = trainingBlock.weeks[indices.weekIndex].workouts[indices.workoutIndex]
-    const deload = trainingBlock.deload
-    const lastWeekIndex = trainingBlock.weeks.length - 1
 
     const axiosContext = useContext(AxiosContext)
 
@@ -33,16 +34,16 @@ const TrainingDay = ({ navigation, route }) => {
                 <>
                     <TouchableOpacity 
                         style={styles.optionBox}
-                        onPress={() => setModalVis(!modalVis)}>
+                        onPress={() => setModalCopyWorkout(!modalCopyWorkout)}>
                         <Text style={styles.optionText}>Copy Workout from past week</Text>
                     </TouchableOpacity>
                     <ModalCopyWorkout 
                     indices={indices}
-                    modalVisible={modalVis} 
-                    setModalVisible={setModalVis}
+                    modalVisible={modalCopyWorkout} 
+                    setModalVisible={setModalCopyWorkout}
                     navigation={navigation}
-                    deload={deload}
-                    lastWeekIndex={lastWeekIndex} />
+                    deload={trainingBlock.deload}
+                    lastWeekIndex={trainingBlock.weeks.length - 1} />
                 </>
                 :
                 <View style={styles.headerSpacer}>
@@ -62,13 +63,28 @@ const TrainingDay = ({ navigation, route }) => {
                     }                                                                                                                                                                             
                     </View>
                 </View>
-                <TouchableOpacity
-                    style={styles.btnStyling}
-                    onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation)} >
+                <View style={styles.btnLayout}>
+                    <TouchableOpacity
+                        style={Object.assign({}, styles.btnStyling, {backgroundColor: "#fab758", marginLeft: 10})}
+                        onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation, true, {})} >
+                            <Text style={styles.addText}>
+                                Add new section..
+                            </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={Object.assign({}, styles.btnStyling, {backgroundColor: "#f54518"})}
+                        onPress={() => setModalLoadSection(!modalLoadSection)}>
                         <Text style={styles.addText}>
-                            Add new Section..
-                        </Text>
-                </TouchableOpacity>
+                                Load section... 
+                            </Text>
+                    </TouchableOpacity>
+                </View>
+                
+                <ModalLoadNewSection 
+                indices={indices}
+                modalVisible={modalLoadSection} 
+                setModalVisible={setModalLoadSection}
+                navigation={navigation} />
             </ScrollView>
         </SafeAreaView>
     )  
@@ -115,11 +131,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column'
     },
+    btnLayout: {
+        display: 'flex',
+        flexDirection: 'row'
+    },
     btnStyling: {
         width: '33%',
-        marginLeft: 10,
+        marginBottom: 10,
         padding: 10,
-        backgroundColor: "#fab758",
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
         borderBottomLeftRadius: 5,

@@ -6,30 +6,27 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity
   } from 'react-native';
-import TrainingPlanItem from '../blocks/TrainingPlanItem'
+import ActivityTemplateItem from '../blocks/ActivityTemplateItem'
 import ButtonItem from '../blocks/inputs/ButtonItem'
 import { boxShadowStyle } from '../helpers/boxShadowStyle';
-import { useTrainingStore } from '../../datastore/useTrainingStore'
-import { AuthContext } from '../../datastore/AuthContext'
+import { useActivityTemplateStore } from '../../datastore/useActivityTemplateStore'
 import { AxiosContext } from '../../datastore/AxiosContext'
 
-const TrainingPlans = ({navigation}) => {
+const ActivityTemplates = ({navigation}) => {
     const [screenActive, setScreenActive ] = useState(true)
     const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
-    const trainingPlans = useTrainingStore((state) => state.trainingPlans)
+    const activityTemplates = useActivityTemplateStore((state) => state.activityTemplates)
 
-    const updateTrainingState = useTrainingStore((state) => state.updateTrainingPlans)
-    const authContext = useContext(AuthContext)
+    const updateTemplatesState = useActivityTemplateStore((state) => state.updateActivityTemplates)
     const axiosContext = useContext(AxiosContext)
 
     useFocusEffect(useCallback(() => {        
-        const getTrainingPlanData = () => {
-            axiosContext.getUserTrainingPlans(updateTrainingState)
+        const getActivityTemplatesData = () => {
+            axiosContext.getActivityTemplates(updateTemplatesState)
         }
 
-        getTrainingPlanData()
+        getActivityTemplatesData()
 
         return () => {
             setScreenActive(false)
@@ -40,44 +37,28 @@ const TrainingPlans = ({navigation}) => {
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.banner}>
                 <Text style={styles.header}>
-                    Your Training Plans
+                    Your Activity Templates
                 </Text>
             </View>
             <View style={Object.assign({}, styles.bannerSub, boxShadow)}>
                 <ButtonItem 
                     navigation={navigation}
-                    route={'TrainingPlan-Form'} 
-                    btnInfo={{name: 'Add Plan'}} 
+                    route={'ActivityTemplate-Form'} 
+                    btnInfo={{name: 'Add Section Template'}} 
                     bgColor={'#fab758'}
                     extraStyling={styles.extraBtnStyling} />
-                <ButtonItem 
-                    navigation={navigation}
-                    route={'ActivityTemplates'} 
-                    btnInfo={{name: 'Activity Templates'}} 
-                    bgColor={'#fab758'}
-                    extraStyling={styles.extraBtnStyling} />
-                <TouchableOpacity
-                    style={styles.btnStyling}
-                    onPress={() => authContext.logout()} >
-                    <Text style={styles.RalewayBold}>
-                        Logout
-                    </Text>
-                </TouchableOpacity>
             </View>
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
                 <View style={styles.itemBox}>
                     {
-                        trainingPlans.map((plan, idx) => {
-                            return <TrainingPlanItem
+                        activityTemplates.map((template, idx) => {
+                            return <ActivityTemplateItem
                                     navigation={navigation} 
-                                    route={'TrainingPlan'} 
-                                    plan={plan} 
-                                    iconText={'TP'+ (idx + 1)}
-                                    key={'TP'+ (idx + 1)}
-                                    _iconColor={'#3f78e0'}
-                                    supplementaryInfo={plan.startDate + " - " + plan.endDate}
-                                    indices={{planIndex: idx}}
+                                    template={template} 
+                                    iconText={'AT'+ (idx + 1)}
+                                    key={'AT'+ (idx + 1)}
+                                    indices={{activityIndex: idx}}
                                     setScreenRefresh={setScreenActive} />                            
                         })
                     }
@@ -174,4 +155,4 @@ const styles = StyleSheet.create({
     }
   })
 
-export default TrainingPlans;
+export default ActivityTemplates;

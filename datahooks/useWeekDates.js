@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { parseDate, formatDateAddStartDate, formatDateAddStartDatePlusOne } from '../components/helpers/adjustTrainingCycleDates'
 
 const useWeekDates = (startDate, weekShift) => {
-    console.log('hoho: ', startDate)
     const [ dates, setDates ] = useState({ 
         start: '',
         end: '',
