@@ -13,6 +13,9 @@ import TrainingWeek from './components/training/TrainingWeek';
 import TrainingDay from './components/training/TrainingDay';
 import FormTrainingPlan from './components/training/FormTrainingPlan';
 import FormCycleWorkouts from './components/training/FormCycleWorkouts';
+import ActivityTemplates from './components/training/ActivityTemplates';
+import ActivityTemplate from './components/training/ActivityTemplate';
+import FormActivityTemplate from './components/training/FormActivityTemplate';
 import { AuthContext } from './datastore/AuthContext'
 import * as Keychain from 'react-native-keychain';
 
@@ -65,48 +68,18 @@ const App = () => {
             <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
             <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
             <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
+            <Stack.Screen name="ActivityTemplates" component={ActivityTemplates} options={{ title:'Activity Templates'}} />
+            <Stack.Screen name="ActivityTemplate" component={ActivityTemplate} options={{ title:'Activity Template'}} />
+
+            <Stack.Screen name="ActivityTemplate-Form" component={FormActivityTemplate} options={{ title:'New Section Template'}} />
           </>
         }
         </Stack.Navigator>
       </NavigationContainer>
-
       }
     </>
 
   )
-
-
-//   if (status == 'loading')
-//   {
-//     return <Loading />
-//   } else if (authenticated == false) {
-//     return (
-//       <NavigationContainer>
-//         <Stack.Navigator initialRouteName="Home">
-//               <Stack.Screen name="Home" component={Home} options={{ title:'BetaTinkr'}} />
-//               <Stack.Screen name="Signup" component={Signup} options={{ title:'BetaTinkr'}} />
-//               <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title:'BetaTinkr'}} />
-//               <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title:'BetaTinkr'}} />
-//         </Stack.Navigator>
-//       </NavigationContainer>
-//     )
-//   } else {
-//     return (
-//       <NavigationContainer>
-//         <Stack.Navigator initialRouteName="TrainingPlans">
-//               <Stack.Screen name="TrainingPlans" component={TrainingPlans} options={{ title:'Training Plans'}} />
-//               <Stack.Screen name="TrainingPlan" component={TrainingPlan} options={{ title:'Training Plan'}} />
-//               <Stack.Screen name="TrainingCycle" component={TrainingCycle} options={{ title:'Training Cycle'}} />
-//               <Stack.Screen name="TrainingWeek" component={TrainingWeek} options={{ title:'Training Week'}} />
-//               <Stack.Screen name="TrainingDay" component={TrainingDay} options={{ title:'Training Day'}} />
-//               <Stack.Screen name="TrainingPlan-Form" component={FormTrainingPlan} options={{ title:'New Plan'}} />
-//               <Stack.Screen name="CycleWorkout-Form" component={FormCycleWorkouts} options={{ title:'Setup Workout'}} />
-//         </Stack.Navigator>
-//       </NavigationContainer>
-//     )
-//   }
-// }
-
 }
 
 export default App;

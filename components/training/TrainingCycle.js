@@ -42,13 +42,13 @@ const TrainingCycle = ({ route, navigation }) => {
                 <></>
                 }
             </View>
-
+{/* 
             <WorkoutButton 
                     navigation={navigation}
                     route={'CycleWorkout-Form'} 
                     btnInfo={{name: 'Setup Workouts Across All Weeks', indices: indices}} 
                     bgColor={'#fab758'}
-                    extraStyling={styles.extraBtnStyling} />
+                    extraStyling={styles.extraBtnStyling} /> */}
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
                 <View style={styles.itemBox}>

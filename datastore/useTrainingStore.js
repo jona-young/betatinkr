@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import _ from 'lodash'
-import { selectedDateParse, followingDatesParse, selectedDateDiffParse, followingDatesDiffParse, formatDateAddEndDate, formatDateAddStartDate, formatDateAddStartDatePlusOne } from '../components/helpers/adjustTrainingCycleDates';
+import { formatDateAddStartDate, formatDateAddStartDatePlusOne } from '../components/helpers/adjustTrainingCycleDates';
 import { adjustMesoCycleWeeks } from '../components/helpers/adjustMesoCycleWeeks';
 import { adjustWeekWorkouts } from '../components/helpers/adjustWeekWorkouts';
 
@@ -9,7 +9,9 @@ const newSection = {name: 'New Section', exercises: [newExercise]}
 
 export const useTrainingStore = create((set) => ({
     trainingPlans: [],
+    activityTemplates: [],
     updateTrainingPlans: (data) => set((state) => ({trainingPlans: data})),
+    updateActivityTemplates: (data) => set((state) => ({activityTemplates: data}))
 }))
 
 export const getPlanCopy = (indices) => {
@@ -24,8 +26,6 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
         = dataSetChunks([planIndex, 'blocks', blockIndex])
     const deloadBool = !(trainingBlock.deload)
     const workoutsPerWeek = trainingBlock.weeks[0].workouts.length
-
-    console.log('BEFOsRE IT SHOULD BE 2: ', trainingBlock.weeks.length)
 
     let blockCopy = []
 
@@ -53,7 +53,6 @@ export const handleChangeDeload = (axiosContext, planIndex, blockIndex, navigati
         }
     }
 
-    console.log('shouldbe bsut prob is 3: ', trainingBlock.weeks.length)
     // weekshift counter
     let weekShiftCounter = 0
     
@@ -305,8 +304,23 @@ export const handleUpdateExercise = (axiosContext, planIndex, blockIndex, weekIn
     return
 }
 
+export const replaceActivity = (axiosContext, planIndex, blockIndex, weekIndex, workoutIndex, activityIndex, updatedActivity, navigation) => {
+    const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks, trainingWeek, 
+        trainingWorkouts, trainingWorkout, trainingActivities ] 
+        = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks', weekIndex, 'workouts',
+                    workoutIndex, 'activities'])
+    
+    const updatedActivities = allStatesUpdater(trainingActivities, activityIndex, updatedActivity)
+    const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
+    const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
+
+    updatedWeeksToPlans([trainingWeeks, trainingBlocks, trainingPlans], [weekIndex, blockIndex, planIndex], ['workouts', 'weeks', 'blocks'], updatedWorkouts, navigation, axiosContext)
+
+    return
+}
+
 // add a new activity section within an individual workout
-export const addActivity = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, navigation) => {
+export const addActivity = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, navigation, blankCopy, insertActivity) => {
     /* template index is utilized when setting up standard workouts across multiple weeks in a single mesocycle
         if attempting to update an individual activity within a single workout, set templateIndex=weekIndex
         when calling the function */
@@ -316,7 +330,12 @@ export const addActivity = (axiosContext, planIndex, blockIndex, weekIndex, temp
                     workoutIndex, 'activities'])
 
     let activityList = trainingActivities.slice()
-    activityList.push(newSection)
+
+    if (blankCopy) {
+        activityList.push(newSection)
+    } else {
+        activityList.push(insertActivity)
+    }
 
     const updatedWorkout = { ...trainingWorkout, ['activities']: activityList }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)

@@ -1,26 +1,20 @@
-import React, { useState, useContext } from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity
-  } from 'react-native';
-import TrainingSection from '../training/TrainingSection'
-import { useTrainingStore, addExercise } from '../../datastore/useTrainingStore'
-import ModalChangeSection from '../blocks/modals/ModalChangeSection'
-import ModalLoadSection from '../blocks/modals/ModalLoadSection';
+import { useState, useContext } from 'react';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
+import ModalChangeTemplateName from '../blocks/modals/ModalChangeTemplateName'
+import ExerciseTemplate from './ExerciseTemplate'
+import { addExercise } from '../../datastore/useActivityTemplateStore'
 import { AxiosContext } from '../../datastore/AxiosContext'
 
-const TrainingSections = ({indices, navigation}) => {
-    const [ modalVis, setModalVis ] = useState(false)
-    const [ modalLoadSection, setModalLoadSection ] = useState(false)
-    const section = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex].workouts[indices.workoutIndex].activities[indices.activityIndex]
+const SectionTemplate = ({ section, indices, navigation }) => {
+    const [ modalActivityName, setModalActivityName ] = useState(false)
+
     const axiosContext = useContext(AxiosContext)
 
+
     return (
-        <View style={styles.sectionBox}>
+        <>
             <TouchableOpacity 
-            onPress={() => setModalVis(!modalVis)}
+            onPress={() => setModalActivityName(!modalActivityName)}
             key={indices.activityIndex + '-' + section.name} >
                 <View style={styles.sectionBanner}>
                     <Text style={styles.header}>
@@ -31,6 +25,12 @@ const TrainingSections = ({indices, navigation}) => {
                     </View>
                 </View>
             </TouchableOpacity>
+            <ModalChangeTemplateName 
+            activityName={section.name}
+            indices={indices}
+            modalVisible={modalActivityName} 
+            setModalVisible={setModalActivityName}
+            navigation={navigation} />
             <View style={styles.sectionContent}>
                 <View style={styles.itemBox}>
                     <Text style={Object.assign({}, styles.exerciseItem, styles.exerciseHeading)} numberOfLines={1}>
@@ -52,44 +52,22 @@ const TrainingSections = ({indices, navigation}) => {
                 {
                     section.exercises.map((exercise, idx) => {
                         return (
-                            <TrainingSection
+                            <ExerciseTemplate 
                                 exercise={exercise}
-                                indices={Object.assign({}, indices, { exerciseIndex: idx })}
-                                key={'TS1-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + indices.activityIndex + idx}
+                                indices={Object.assign({}, indices, { exerciseIndex: idx})}
                                 navigation={navigation} />
                         )
                     })
                 }
             </View>
-            <View style={styles.btnLayout}>
             <TouchableOpacity
                 style={styles.extraBtnStyling}
-                onPress={() => addExercise(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation)} >
+                onPress={() => addExercise(axiosContext, indices.activityIndex, navigation)} >
                 <Text style={styles.addText}>
                     Add new exercise...
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.btnStyling}
-                onPress={() => setModalLoadSection(!modalLoadSection)}>
-                <Text style={styles.addText}>
-                        Replace Section... 
-                </Text>
-            </TouchableOpacity>
-            </View>
-            <ModalChangeSection 
-            activityName={section.name}
-            indices={indices}
-            modalVisible={modalVis} 
-            setModalVisible={setModalVis}
-            navigation={navigation} />
-            <ModalLoadSection 
-            indices={indices}
-            label={section.name}
-            modalVisible={modalLoadSection} 
-            setModalVisible={setModalLoadSection}
-            navigation={navigation} />
-        </View>
+        </>
     )
 }
 
@@ -147,10 +125,12 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 5,
     },    
     btnStyling: {
-        width: '35%',
+        width: '30%',
         marginRight: 10,
-        padding: 10,
-        backgroundColor: "#fa7452",
+        padding: 5,
+        backgroundColor: "#de2a1d",
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
@@ -165,6 +145,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+   
     exerciseItem: {
         fontSize: 12,
         color: '#3f78e0',
@@ -208,10 +189,6 @@ const styles = StyleSheet.create({
     unitsText: {
         fontFamily: 'Raleway-Medium',
     },
-    btnLayout: {
-        display: 'flex',
-        flexDirection: 'row'
-    }
-  });
+})
 
-export default TrainingSections
+export default SectionTemplate;
