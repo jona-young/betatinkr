@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import {
     SafeAreaView,
+    KeyboardAvoidingView,
     ScrollView,
     StyleSheet,
     Text,
@@ -13,10 +14,11 @@ import { AxiosContext } from '../../datastore/AxiosContext'
 import TrainingSections from './TrainingSections';
 import ModalCopyWorkout from '../blocks/modals/ModalCopyWorkout';
 import ModalLoadNewSection from '../blocks/modals/ModalLoadNewSection';
-
+import { useHeaderHeight } from '@react-navigation/elements'
 
 const TrainingDay = ({ navigation, route }) => {
     const { indices } = route.params
+    const height = useHeaderHeight()
     const [ modalCopyWorkout, setModalCopyWorkout ] = useState(false)
     const [ modalLoadSection, setModalLoadSection ] = useState(false)
     const trainingBlock = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex]
@@ -29,101 +31,106 @@ const TrainingDay = ({ navigation, route }) => {
     }
 
     const axiosContext = useContext(AxiosContext)
-
+    
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={styles.banner}>
-                <Text style={styles.header}>
-                    {trainingDay.name}
-                </Text>
-            </View> 
-            { indices.weekIndex > 0 ?
-                <>
-                    <TouchableOpacity 
-                        style={styles.optionBox}
-                        onPress={() => setModalCopyWorkout(!modalCopyWorkout)}>
-                        <Text style={styles.optionText}>Copy Workout from past week</Text>
-                    </TouchableOpacity>
-                    <ModalCopyWorkout 
-                    indices={indices}
-                    modalVisible={modalCopyWorkout} 
-                    setModalVisible={setModalCopyWorkout}
-                    navigation={navigation}
-                    deload={trainingBlock.deload}
-                    lastWeekIndex={trainingBlock.weeks.length - 1} />
-                </>
-                :
-                <View style={styles.headerSpacer}>
-                </View>
-            }
-            <ScrollView
-            contentInsetAdjustmentBehavior="automatic">
-                <View>
-                    <View style={styles.itemBox}>
-                    {
-                        trainingDay.activities.map((section, idx) => {
-                            return <TrainingSections 
-                                        indices={Object.assign({}, indices, {activityIndex: idx })}
-                                        key={'TS-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + idx}
-                                        navigation={navigation} />
-                        })
-                    }                                                                                                                                                                             
-                    </View>
-                </View>
-                <View style={styles.btnLayout}>
-                    <TouchableOpacity
-                        style={Object.assign({}, styles.btnStyling, {backgroundColor: "#fab758", marginLeft: 10})}
-                        onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation, true, {})} >
-                            <Text style={styles.addText}>
-                                Add new section..
-                            </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={Object.assign({}, styles.btnStyling, {backgroundColor: "#f54518"})}
-                        onPress={() => setModalLoadSection(!modalLoadSection)}>
-                        <Text style={styles.addText}>
-                                Load section... 
-                            </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.sectionBanner}>
+            <KeyboardAvoidingView
+                keyboardVerticalOffset={height + 25}
+                behavior="position"
+                enabled>
+                <View style={styles.banner}>
                     <Text style={styles.header}>
-                        Notes
+                        {trainingDay.name}
                     </Text>
-                </View>
-                <View style={styles.sectionContent}>
-                    <Text style={styles.label}>Type Here:</Text>
-                    <TextInput
-                        style={styles.textField}
-                        value={workoutNotes}
-                        onChangeText={(value) => { setWorkoutNotes(value)}}
-                        multiline={true}
-                        placeholder={"Place your reflections and thoughts about your workout here..."}
-                        inputMode={'text'}
-                        keyboardType={'default'} />
-                </View>
-                <View style={Object.assign({}, styles.btnLayout, { marginLeft: 10, marginRight: 10 })}>
-                    <TouchableOpacity
-                    style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#fab758" })}
-                    onPress={() => handleChangeWorkoutField(axiosContext, indices.planIndex, indices.blockIndex, indices.workoutIndex, 'notes', workoutNotes, navigation)} >
-                        <Text style={styles.addText}>
-                            Save Notes
+                </View> 
+                { indices.weekIndex > 0 ?
+                    <>
+                        <TouchableOpacity 
+                            style={styles.optionBox}
+                            onPress={() => setModalCopyWorkout(!modalCopyWorkout)}>
+                            <Text style={styles.optionText}>Copy Workout from past week</Text>
+                        </TouchableOpacity>
+                        <ModalCopyWorkout 
+                        indices={indices}
+                        modalVisible={modalCopyWorkout} 
+                        setModalVisible={setModalCopyWorkout}
+                        navigation={navigation}
+                        deload={trainingBlock.deload}
+                        lastWeekIndex={trainingBlock.weeks.length - 1} />
+                    </>
+                    :
+                    <View style={styles.headerSpacer}>
+                    </View>
+                }
+                <ScrollView
+                contentInsetAdjustmentBehavior="automatic">
+                    <View>
+                        <View style={styles.itemBox}>
+                        {
+                            trainingDay.activities.map((section, idx) => {
+                                return <TrainingSections 
+                                            indices={Object.assign({}, indices, {activityIndex: idx })}
+                                            key={'TS-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + idx}
+                                            navigation={navigation} />
+                            })
+                        }                                                                                                                                                                             
+                        </View>
+                    </View>
+                    <View style={styles.btnLayout}>
+                        <TouchableOpacity
+                            style={Object.assign({}, styles.btnStyling, {backgroundColor: "#fab758", marginLeft: 10})}
+                            onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation, true, {})} >
+                                <Text style={styles.addText}>
+                                    Add new section..
+                                </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={Object.assign({}, styles.btnStyling, {backgroundColor: "#f54518"})}
+                            onPress={() => setModalLoadSection(!modalLoadSection)}>
+                            <Text style={styles.addText}>
+                                    Load section... 
+                                </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.sectionBanner}>
+                        <Text style={styles.header}>
+                            Notes
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                    style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#f54518" })}
-                    onPress={() => handleClearNotes()} >
-                        <Text style={styles.addText}>
-                            Clear
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <ModalLoadNewSection 
-                indices={indices}
-                modalVisible={modalLoadSection} 
-                setModalVisible={setModalLoadSection}
-                navigation={navigation} />
-            </ScrollView>
+                    </View>
+                    <View style={styles.sectionContent}>
+                        <Text style={styles.label}>Type Here:</Text>
+                        <TextInput
+                            style={styles.textField}
+                            value={workoutNotes}
+                            onChangeText={(value) => { setWorkoutNotes(value)}}
+                            multiline={true}
+                            placeholder={"Place your reflections and thoughts about your workout here..."}
+                            inputMode={'text'}
+                            keyboardType={'default'} />
+                    </View>
+                    <View style={Object.assign({}, styles.btnLayout, { marginLeft: 10, marginRight: 10 })}>
+                        <TouchableOpacity
+                        style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#fab758" })}
+                        onPress={() => handleChangeWorkoutField(axiosContext, indices.planIndex, indices.blockIndex, indices.workoutIndex, 'notes', workoutNotes, navigation)} >
+                            <Text style={styles.addText}>
+                                Save Notes
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#f54518" })}
+                        onPress={() => handleClearNotes()} >
+                            <Text style={styles.addText}>
+                                Clear
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ModalLoadNewSection 
+                    indices={indices}
+                    modalVisible={modalLoadSection} 
+                    setModalVisible={setModalLoadSection}
+                    navigation={navigation} />
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )  
 }
