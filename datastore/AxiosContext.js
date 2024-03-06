@@ -137,7 +137,7 @@ const AxiosProvider = ({children}) => {
         }
     }
 
-    const postActivityTemplate = async (form, navigation, route, setErrors) => {
+    const postActivityTemplate = async (form, navigation, route, setErrors, setActivityTemplates) => {
         setErrors({})
         try {
             //error checking logic
@@ -145,6 +145,7 @@ const AxiosProvider = ({children}) => {
             const response = await authAxios.post('activity-template', form)
 
             if (response) {
+                setActivityTemplates(response.data)
                 navigation.navigate(route)
             }
         } catch(e) {
@@ -175,15 +176,16 @@ const AxiosProvider = ({children}) => {
         }
     }
 
-    const deleteActivityTemplate = async (id, navigation, route) => {
+    const deleteActivityTemplate = async (id, navigation, route, setActivityTemplates) => {
         try {
-            const response = await authAxios.put('delete-activity-template', {id: id})
-    
+            const response = await authAxios.put('delete-activity-template/' + id, {})
+            
             if (response) {
+                setActivityTemplates(response.data)
                 navigation.navigate(route)
             }
         } catch(e) {
-            console.log(e)
+            console.log(e.response)
         }
     }
 

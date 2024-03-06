@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { View, Text, TextInput, Modal, Pressable, StyleSheet } from 'react-native'
-import { removeActivity, handleChangeActivityName } from '../../../datastore/useTrainingStore'
+import { removeActivity, handleChangeActivity } from '../../../datastore/useTrainingStore'
 import { AxiosContext } from '../../../datastore/AxiosContext'
 
 const ModalChangeSection = ({activityName, indices, modalVisible, setModalVisible, navigation}) => {
@@ -8,7 +8,7 @@ const ModalChangeSection = ({activityName, indices, modalVisible, setModalVisibl
     const axiosContext = useContext(AxiosContext)
 
     const handleSubmit = () => {
-        handleChangeActivityName(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, activity, navigation)
+        handleChangeActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, 'name', activity, navigation)
 
         setModalVisible(!modalVisible);
     }

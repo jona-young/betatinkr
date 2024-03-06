@@ -54,10 +54,10 @@ const ActivityTemplates = ({navigation}) => {
                     {
                         activityTemplates.map((template, idx) => {
                             return <ActivityTemplateItem
+                                    key={idx + '-activity'}
                                     navigation={navigation} 
                                     template={template} 
                                     iconText={'AT'+ (idx + 1)}
-                                    key={'AT'+ (idx + 1)}
                                     indices={{activityIndex: idx}}
                                     setScreenRefresh={setScreenActive} />                            
                         })

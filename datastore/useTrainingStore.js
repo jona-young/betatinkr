@@ -266,14 +266,14 @@ export const handleChangeWorkoutField = (axiosContext, planIndex, blockIndex, wo
 }
 
 // changes the activity section name
-export const handleChangeActivityName = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, value, navigation) => {
+export const handleChangeActivity = (axiosContext, planIndex, blockIndex, weekIndex, templateIndex, workoutIndex, activityIndex, fieldName, value, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks, trainingWeek, 
         trainingWorkouts, trainingWorkout, trainingActivities ] 
         = dataSetChunks([planIndex, 'blocks', blockIndex, 'weeks', templateIndex, 'workouts',
                     workoutIndex, 'activities'])
 
     // series of react docs array state update
-    const updatedActivity = { ...trainingActivities[activityIndex], ['name']: value }
+    const updatedActivity = { ...trainingActivities[activityIndex], [fieldName]: value }
     const updatedActivities = allStatesUpdater(trainingActivities, activityIndex, updatedActivity)
     const updatedWorkout = { ...trainingWorkout, ['activities']: updatedActivities }
     const updatedWorkouts = allStatesUpdater(trainingWorkouts, workoutIndex, updatedWorkout)
@@ -303,6 +303,8 @@ export const handleUpdateExercise = (axiosContext, planIndex, blockIndex, weekIn
 
     return
 }
+
+
 
 export const replaceActivity = (axiosContext, planIndex, blockIndex, weekIndex, workoutIndex, activityIndex, updatedActivity, navigation) => {
     const [ trainingPlans, trainingPlan, trainingBlocks, trainingBlock, trainingWeeks, trainingWeek, 

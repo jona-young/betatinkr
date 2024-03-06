@@ -1,12 +1,14 @@
 import { useContext } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
 import { AxiosContext } from '../../../datastore/AxiosContext'
+import { useActivityTemplateStore } from '../../../datastore/useActivityTemplateStore'
 
 const ModalChangeActivityTemplate = ({navigation, id, modalVisible, setModalVisible, setScreenRefresh}) => {
     const axiosContext = useContext(AxiosContext)
+    const updateActivityTemplates = useActivityTemplateStore((state) => state.updateActivityTemplates)
 
     const handleSubmit = () => {
-      axiosContext.deleteActivityTemplate(id, navigation, 'TrainingPlans')  
+      axiosContext.deleteActivityTemplate(id, navigation, 'ActivityTemplates', updateActivityTemplates)  
       setModalVisible(!modalVisible)
       setScreenRefresh(true)
     }
@@ -62,8 +64,11 @@ const styles = StyleSheet.create({
       elevation: 5,
     },
     button: {
-      borderRadius: 10,
-      padding: 5,
+      borderRadius: 20,
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 10,
+      paddingRight: 10,
       marginBottom: 3,
       elevation: 2,
     },

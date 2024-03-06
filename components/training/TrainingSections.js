@@ -9,11 +9,13 @@ import TrainingSection from '../training/TrainingSection'
 import { useTrainingStore, addExercise } from '../../datastore/useTrainingStore'
 import ModalChangeSection from '../blocks/modals/ModalChangeSection'
 import ModalLoadSection from '../blocks/modals/ModalLoadSection';
+import ModalSaveTemplate from '../blocks/modals/ModalSaveTemplate';
 import { AxiosContext } from '../../datastore/AxiosContext'
 
 const TrainingSections = ({indices, navigation}) => {
     const [ modalVis, setModalVis ] = useState(false)
     const [ modalLoadSection, setModalLoadSection ] = useState(false)
+    const [ modalSaveTemplate, setModalSaveTemplate ] = useState(false)
     const section = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex].weeks[indices.weekIndex].workouts[indices.workoutIndex].activities[indices.activityIndex]
     const axiosContext = useContext(AxiosContext)
 
@@ -66,14 +68,21 @@ const TrainingSections = ({indices, navigation}) => {
                 style={styles.extraBtnStyling}
                 onPress={() => addExercise(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, indices.activityIndex, navigation)} >
                 <Text style={styles.addText}>
-                    Add new exercise...
+                    Add new exercise
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.btnStyling}
                 onPress={() => setModalLoadSection(!modalLoadSection)}>
                 <Text style={styles.addText}>
-                        Replace Section... 
+                    Replace Section 
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.extraBtnStyling}
+                onPress={() => setModalSaveTemplate(!modalSaveTemplate)}>
+                <Text style={styles.addText}>
+                    Save as Template
                 </Text>
             </TouchableOpacity>
             </View>
@@ -88,6 +97,11 @@ const TrainingSections = ({indices, navigation}) => {
             label={section.name}
             modalVisible={modalLoadSection} 
             setModalVisible={setModalLoadSection}
+            navigation={navigation} />
+            <ModalSaveTemplate 
+            section={section}
+            modalVisible={modalSaveTemplate} 
+            setModalVisible={setModalSaveTemplate}
             navigation={navigation} />
         </View>
     )
@@ -140,15 +154,14 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     extraBtnStyling: {
-        width: '35%',
+        width: '33%',
         padding: 10,
         backgroundColor: '#3f78e0',
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },    
     btnStyling: {
-        width: '35%',
-        marginRight: 10,
+        width: '34%',
         padding: 10,
         backgroundColor: "#fa7452",
         borderBottomLeftRadius: 5,

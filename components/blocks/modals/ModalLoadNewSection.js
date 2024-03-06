@@ -27,6 +27,7 @@ const ModalLoadNewSection = ({indices, label, modalVisible, setModalVisible, nav
                     <Text style={styles.modalHeading}>Create a new section?</Text>
                     { activityTemplates.map((section, idx) => {
                       return <Pressable
+                                key={idx + '-' + section.name}
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => handleSubmit(idx)}>
                                 <Text style={styles.textStyle}>Create "{section.name}"</Text>

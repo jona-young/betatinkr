@@ -1,14 +1,18 @@
-import { useContext } from 'react'
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
+import { useState, useContext } from 'react'
+import { Modal, View, Text, Pressable, StyleSheet, TextInput } from 'react-native'
 import { AxiosContext } from '../../../datastore/AxiosContext'
+import { useActivityTemplateStore } from '../../../datastore/useActivityTemplateStore'
 
-const ModalChangePlan = ({navigation, modalVisible, setModalVisible, id, setScreenRefresh}) => {
+const ModalSaveTemplate = ({navigation, modalVisible, setModalVisible, section}) => {
     const axiosContext = useContext(AxiosContext)
+    const [ sectionName, setSectionName ] = useState(section.name)
+    const updateActivityTemplates = useActivityTemplateStore((state) => state.updateActivityTemplates)
+    const [ errors, setErrors ] = useState({})
 
     const handleSubmit = () => {
-      axiosContext.deleteTrainingPlan(id, navigation, 'TrainingPlans')  
-      setModalVisible(!modalVisible)
-      setScreenRefresh(true)
+        let updatedSection = { ...section, name: sectionName }
+        axiosContext.postActivityTemplate(updatedSection, navigation, "#", setErrors, updateActivityTemplates)  
+        setModalVisible(!modalVisible)
     }
 
     return (
@@ -22,11 +26,20 @@ const ModalChangePlan = ({navigation, modalVisible, setModalVisible, id, setScre
             }}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalHeading}>Delete Training Plan?</Text>
+                    <Text style={styles.modalHeading}>Save as Template?</Text>
+                    <View style={styles.fieldBox}>
+                        <Text style={styles.label}>Name:</Text>
+                        <TextInput
+                            style={styles.textField}
+                            value={sectionName}
+                            onChangeText={(value) => { setSectionName(value)}}
+                            inputMode={'text'}
+                            keyboardType={'default'} />
+                    </View>
                     <Pressable
                         style={[styles.button, styles.buttonClose]}
                         onPress={() => handleSubmit()}>
-                        <Text style={styles.textStyle}>Delete</Text>
+                        <Text style={styles.textStyle}>Save</Text>
                     </Pressable>
                     <Pressable
                         style={Object.assign({}, styles.button, styles.buttonClose)}
@@ -50,7 +63,7 @@ const styles = StyleSheet.create({
       margin: 20,
       backgroundColor: 'white',
       borderRadius: 20,
-      padding: 35,
+      padding: 15,
       alignItems: 'center',
       shadowColor: '#000',
       shadowOffset: {
@@ -60,13 +73,11 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
+      width: 300
     },
     button: {
-      borderRadius: 20,
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
+      borderRadius: 10,
+      padding: 5,
       marginBottom: 3,
       elevation: 2,
     },
@@ -92,6 +103,28 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       textAlign: 'center',
     },
+    fieldBox: {
+        backgroundColor: '#e0e9fa',
+        marginTop: 10,
+        marginBottom: 10,
+        marginRight: 20,
+        marginLeft: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingRight: 15,
+        paddingLeft: 15,
+        borderRadius: 10,
+        width: '100%'
+    },
+    label: {
+        fontFamily: 'Raleway-Regular',
+        fontSize: 12,
+        color: "#575757"
+    },
+    textField: {
+        fontFamily: 'Raleway-Regular',
+        padding: 5
+    },
   });
 
-export default ModalChangePlan;
+export default ModalSaveTemplate;
