@@ -2,7 +2,6 @@ export const adjustMesoCycleWeeks = (form, blockIndex, weekLen, weekDiff, deload
     let mesoBlockCopy = []
     let nameCounter = 0
 
-
     if (weekDiff > 0) {
         if (deloadBool) {
             // grabs all value except the last week (the deload week)

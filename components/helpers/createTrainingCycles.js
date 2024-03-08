@@ -1,4 +1,4 @@
-import { addWeeks, subDays, isBefore, format} from 'date-fns';
+import { addWeeks, subDays, isBefore, format, differenceInDays} from 'date-fns';
 
 export const createTrainingCycles = async (_startDate, _endDate, weeksPerBlock, deload, workoutsPerWeek) => {
     // let start = parse(_startDate, "yyyy-MM-dd", new Date())
@@ -26,6 +26,12 @@ export const createTrainingCycles = async (_startDate, _endDate, weeksPerBlock, 
             })
         }
 
+        
+        const weekOverload = (differenceInDays(end, addWeeks(start, mesoBlockLen)) + 1) / 7
+        if (weekOverload < 0) {
+            mesoBlockLen = mesoBlockLen - Math.floor(weekOverload * -1)
+        }
+
         let weeks = []
         for (let i = 0; i < mesoBlockLen; i++) {
             let weekNum = i + 1
@@ -44,18 +50,21 @@ export const createTrainingCycles = async (_startDate, _endDate, weeksPerBlock, 
         }
 
         trainingCycles.push({
-            name: 'Mesocycle ' + mesoCount.toString(),
+            name: 'Training Block ' + mesoCount.toString(),
             startDate: format(start, "yyyy-MM-dd"),
             endDate: format(subDays(addWeeks(start, mesoBlockLen), 1), "yyyy-MM-dd"),
             deload: deload,
             weeks: weeks
         })
+
+        if (weekOverload < 0) {
+            // set the last training cycle's end date to the end date that the user provided
+            trainingCycles[trainingCycles.length -1].endDate = format(end, "yyyy-MM-dd")
+        }
+
         start = addWeeks(start, mesoBlockLen)
         mesoCount++;
     }
-
-    // set the last training cycle's end date to the end date that the user provided
-    trainingCycles[trainingCycles.length -1].endDate = format(end, "yyyy-MM-dd")
-
+    
     return { result: true, blocks: trainingCycles}
 }

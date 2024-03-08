@@ -4,6 +4,7 @@ import { SafeAreaView, ScrollView, View, StyleSheet, KeyboardAvoidingView, Touch
 import useSetActivityTemplate from '../../datahooks/useSetActivityTemplate'
 import SubmitButton from '../blocks/inputs/SubmitButton';
 import { AxiosContext } from '../../datastore/AxiosContext'
+import { useActivityTemplateStore } from '../../datastore/useActivityTemplateStore'
 import ExerciseTemplateTextField from '../blocks/inputs/ExerciseTemplateTextField'
 
 
@@ -19,6 +20,7 @@ const FormActivityTemplate = ({ route, navigation}) => {
    
     const height = useHeaderHeight()
     const axiosContext = useContext(AxiosContext)
+    const updateActivityTemplates = useActivityTemplateStore((state) => state.updateActivityTemplates)
     const [ errors, setErrors] = useState({})
 
     const { form, handleChangeActivityName, handleChangeExercise, addActivity, removeActivity, addExercise, removeExercise } = useSetActivityTemplate()
@@ -34,7 +36,7 @@ const FormActivityTemplate = ({ route, navigation}) => {
                     <View style={styles.workout}>
                         <SubmitButton 
                                 bgColor={'#fab758'}
-                                submitFunc={() => axiosContext.postActivityTemplate(form, navigation, 'TrainingPlans', setErrors)} />
+                                submitFunc={() => axiosContext.postActivityTemplate(form, navigation, 'ActivityTemplates', setErrors, updateActivityTemplates)} />
                         { form.map((activity, idx) => {
                             return (
                                 <>
