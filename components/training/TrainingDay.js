@@ -9,11 +9,13 @@ import {
     TouchableOpacity,
     TextInput
   } from 'react-native';
-import { useTrainingStore, addActivity, handleChangeWorkoutField } from '../../datastore/useTrainingStore'
+import { useTrainingStore, addActivity } from '../../datastore/useTrainingStore'
 import { AxiosContext } from '../../datastore/AxiosContext'
 import TrainingSections from './TrainingSections';
 import ModalCopyWorkout from '../blocks/modals/ModalCopyWorkout';
 import ModalLoadNewSection from '../blocks/modals/ModalLoadNewSection';
+import ModalAddNotes from '../blocks/modals/ModalAddNotes';
+
 import { useHeaderHeight } from '@react-navigation/elements'
 
 const TrainingDay = ({ navigation, route }) => {
@@ -21,14 +23,9 @@ const TrainingDay = ({ navigation, route }) => {
     const height = useHeaderHeight()
     const [ modalCopyWorkout, setModalCopyWorkout ] = useState(false)
     const [ modalLoadSection, setModalLoadSection ] = useState(false)
+    const [ modalAddNotes, setModalAddNotes ] = useState(false)
     const trainingBlock = useTrainingStore((state) => state.trainingPlans)[indices.planIndex].blocks[indices.blockIndex]
     const trainingDay = trainingBlock.weeks[indices.weekIndex].workouts[indices.workoutIndex]
-
-    const [ workoutNotes, setWorkoutNotes ] = useState(trainingDay.notes)
-    const handleClearNotes = () => {
-        handleChangeWorkoutField(axiosContext, indices.planIndex, indices.blockIndex, indices.workoutIndex, 'notes', "", navigation)
-        setWorkoutNotes("")
-    }
 
     const axiosContext = useContext(AxiosContext)
     
@@ -64,71 +61,62 @@ const TrainingDay = ({ navigation, route }) => {
                 }
                 <ScrollView
                 contentInsetAdjustmentBehavior="automatic">
-                    <View>
-                        <View style={styles.itemBox}>
-                        {
-                            trainingDay.activities.map((section, idx) => {
-                                return <TrainingSections 
-                                            indices={Object.assign({}, indices, {activityIndex: idx })}
-                                            key={'TS-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + idx}
-                                            navigation={navigation} />
-                            })
-                        }                                                                                                                                                                             
+                    <View style={{paddingBottom: 60}} >
+                        <View>
+                            <View style={styles.itemBox}>
+                            {
+                                trainingDay.activities.map((section, idx) => {
+                                    return <TrainingSections 
+                                                indices={Object.assign({}, indices, {activityIndex: idx })}
+                                                key={'TS-' + indices.planIndex + indices.blockIndex + indices.weeksIndex + indices.workoutsIndex + idx}
+                                                navigation={navigation} />
+                                })
+                            }                                                                                                                                                                             
+                            </View>
                         </View>
-                    </View>
-                    <View style={styles.btnLayout}>
-                        <TouchableOpacity
-                            style={Object.assign({}, styles.btnStyling, {backgroundColor: "#fab758", marginLeft: 10})}
-                            onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation, true, {})} >
+                        <View style={styles.btnLayout}>
+                            <TouchableOpacity
+                                style={Object.assign({}, styles.btnStyling, {backgroundColor: "#fab758", marginLeft: 10})}
+                                onPress={() => addActivity(axiosContext, indices.planIndex, indices.blockIndex, indices.weekIndex, indices.weekIndex, indices.workoutIndex, navigation, true, {})} >
+                                    <Text style={styles.addText}>
+                                        Add new section..
+                                    </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={Object.assign({}, styles.btnStyling, {backgroundColor: "#f54518"})}
+                                onPress={() => setModalLoadSection(!modalLoadSection)}>
                                 <Text style={styles.addText}>
-                                    Add new section..
+                                        Load section... 
+                                    </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.sectionBanner}>
+                            <Text style={styles.headerNotes}>
+                                Notes
+                            </Text>
+                        </View>
+                        <View style={styles.sectionContent}>
+                            <Text style={styles.textField}>{trainingDay.notes ? trainingDay.notes : "Click 'Edit Notes' to add notes"}</Text>
+                        </View>
+                        <TouchableOpacity
+                            style={Object.assign({}, styles.wideBtnStyling, {backgroundColor: "#f54518"})}
+                            onPress={() => setModalAddNotes(!modalAddNotes)}>
+                            <Text style={Object.assign({}, styles.addText, { textAlign: 'center'})}>
+                                    Edit Notes
                                 </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            style={Object.assign({}, styles.btnStyling, {backgroundColor: "#f54518"})}
-                            onPress={() => setModalLoadSection(!modalLoadSection)}>
-                            <Text style={styles.addText}>
-                                    Load section... 
-                                </Text>
-                        </TouchableOpacity>
+                        <ModalAddNotes 
+                        trainingNotes={trainingDay.notes}
+                        indices={indices}
+                        modalVisible={modalAddNotes} 
+                        setModalVisible={setModalAddNotes}
+                        navigation={navigation} />
+                        <ModalLoadNewSection 
+                        indices={indices}
+                        modalVisible={modalLoadSection} 
+                        setModalVisible={setModalLoadSection}
+                        navigation={navigation} />
                     </View>
-                    <View style={styles.sectionBanner}>
-                        <Text style={styles.header}>
-                            Notes
-                        </Text>
-                    </View>
-                    <View style={styles.sectionContent}>
-                        <Text style={styles.label}>Type Here:</Text>
-                        <TextInput
-                            style={styles.textField}
-                            value={workoutNotes}
-                            onChangeText={(value) => { setWorkoutNotes(value)}}
-                            multiline={true}
-                            placeholder={"Place your reflections and thoughts about your workout here..."}
-                            inputMode={'text'}
-                            keyboardType={'default'} />
-                    </View>
-                    <View style={Object.assign({}, styles.btnLayout, { marginLeft: 10, marginRight: 10 })}>
-                        <TouchableOpacity
-                        style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#fab758" })}
-                        onPress={() => handleChangeWorkoutField(axiosContext, indices.planIndex, indices.blockIndex, indices.workoutIndex, 'notes', workoutNotes, navigation)} >
-                            <Text style={styles.addText}>
-                                Save Notes
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                        style={Object.assign({}, styles.extraBtnStyling, { backgroundColor: "#f54518" })}
-                        onPress={() => handleClearNotes()} >
-                            <Text style={styles.addText}>
-                                Clear
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <ModalLoadNewSection 
-                    indices={indices}
-                    modalVisible={modalLoadSection} 
-                    setModalVisible={setModalLoadSection}
-                    navigation={navigation} />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -189,6 +177,16 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
     },
+    wideBtnStyling: {
+        width: '95%',
+        marginBottom: 10,
+        marginLeft: 10,
+        padding: 10,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+    },
     extraBtnStyling: {
         width: '50%',
         padding: 10,
@@ -215,13 +213,11 @@ const styles = StyleSheet.create({
     },
     sectionContent: {
         backgroundColor: '#e0e9fa',
-        borderBottomLeftRadius: 5,
-        borderBottomRightRadius: 5,
         marginLeft: 10,
         marginRight: 10,
         padding: 10
     },
-    header: {
+    headerNotes: {
         fontFamily: 'Raleway-SemiBold',
         fontSize: 18,
         marginTop: 5,

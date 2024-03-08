@@ -125,11 +125,12 @@ const AxiosProvider = ({children}) => {
         }
     }
 
-    const deleteTrainingPlan = async (id, navigation, route) => {
+    const deleteTrainingPlan = async (id, navigation, route, setTrainingPlans) => {
         try {
             const response = await authAxios.delete('training-plan/' + id)
     
             if (response) {
+                setTrainingPlans(response.data)
                 navigation.navigate(route)
             }
         } catch(e) {
@@ -146,6 +147,7 @@ const AxiosProvider = ({children}) => {
 
             if (response) {
                 setActivityTemplates(response.data)
+                console.log(route)
                 navigation.navigate(route)
             }
         } catch(e) {

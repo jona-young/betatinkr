@@ -5,7 +5,7 @@ const useCreateTrainingPlan = (minimumDate) => {
     const [ form, setForm ] = useState({ 
         name: '',
         startDate: parseDate(new Date),
-        endDate: new Date(minimumDate),
+        endDate: parseDate(new Date(minimumDate)),
         activityType: '',
         weeksPerBlock: 0,
         deloadWeek: false,

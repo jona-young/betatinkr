@@ -1,12 +1,16 @@
 import { useContext } from 'react'
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native'
 import { AxiosContext } from '../../../datastore/AxiosContext'
+import { useTrainingStore } from '../../../datastore/useTrainingStore'
+
 
 const ModalChangePlan = ({navigation, modalVisible, setModalVisible, id, setScreenRefresh}) => {
     const axiosContext = useContext(AxiosContext)
+    const updateTrainingState = useTrainingStore((state) => state.updateTrainingPlans)
+
 
     const handleSubmit = () => {
-      axiosContext.deleteTrainingPlan(id, navigation, 'TrainingPlans')  
+      axiosContext.deleteTrainingPlan(id, navigation, 'TrainingPlans', updateTrainingState)  
       setModalVisible(!modalVisible)
       setScreenRefresh(true)
     }
