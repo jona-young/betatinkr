@@ -10,14 +10,12 @@ import {
   } from 'react-native';
 import TrainingPlanItem from '../blocks/TrainingPlanItem'
 import ButtonItem from '../blocks/inputs/ButtonItem'
-import { boxShadowStyle } from '../helpers/boxShadowStyle';
 import { useTrainingStore } from '../../datastore/useTrainingStore'
 import { AuthContext } from '../../datastore/AuthContext'
 import { AxiosContext } from '../../datastore/AxiosContext'
 
 const TrainingPlans = ({navigation}) => {
     const [screenActive, setScreenActive ] = useState(true)
-    const boxShadow = boxShadowStyle(-2, 2, '#000000', 0.2, 3, 4)
     const trainingPlans = useTrainingStore((state) => state.trainingPlans)
 
     const updateTrainingState = useTrainingStore((state) => state.updateTrainingPlans)
@@ -42,20 +40,6 @@ const TrainingPlans = ({navigation}) => {
                 <Text style={styles.header}>
                     Your Training Plans
                 </Text>
-            </View>
-            <View style={Object.assign({}, styles.bannerSub, boxShadow)}>
-                <ButtonItem 
-                    navigation={navigation}
-                    route={'TrainingPlan-Form'} 
-                    btnInfo={{name: 'Add Plan'}} 
-                    bgColor={'#fab758'}
-                    extraStyling={styles.extraBtnStyling} />
-                <ButtonItem 
-                    navigation={navigation}
-                    route={'ActivityTemplates'} 
-                    btnInfo={{name: 'Activity Templates'}} 
-                    bgColor={'#fab758'}
-                    extraStyling={styles.extraBtnStyling} />
                 <TouchableOpacity
                     style={styles.btnStyling}
                     onPress={() => authContext.logout()} >
@@ -64,6 +48,12 @@ const TrainingPlans = ({navigation}) => {
                     </Text>
                 </TouchableOpacity>
             </View>
+            <ButtonItem 
+                    navigation={navigation}
+                    route={'TrainingPlan-Form'} 
+                    btnInfo={{name: 'Add New Training Plan!'}} 
+                    bgColor={'#fab758'}
+                    extraStyling={styles.extraBtnStyling} />
             <ScrollView
             contentInsetAdjustmentBehavior="automatic">
                 <View style={styles.itemBox}>
@@ -154,8 +144,7 @@ const styles = StyleSheet.create({
     },
     btnStyling: {
         height: 28,
-        marginTop: 10,
-        marginRight: 'auto',
+        marginRight: 10,
         marginLeft: 'auto',
         marginBottom: 5,
         paddingTop: 5,

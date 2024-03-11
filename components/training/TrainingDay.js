@@ -61,7 +61,7 @@ const TrainingDay = ({ navigation, route }) => {
                 }
                 <ScrollView
                 contentInsetAdjustmentBehavior="automatic">
-                    <View style={{paddingBottom: 60}} >
+                    <View style={{paddingBottom: 200}} >
                         <View>
                             <View style={styles.itemBox}>
                             {
