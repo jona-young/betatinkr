@@ -11,6 +11,8 @@ import { AxiosContext } from '../../datastore/AxiosContext'
 import InputField from '../blocks/inputs/InputField';
 import StartEndDatePicker from '../blocks/inputs/StartEndDatePicker';
 import TrainingWeeks from '../blocks/inputs/TrainingWeeks';
+import ButtonItem from '../blocks/inputs/ButtonItem'
+
 
 
 const FormTrainingPlan = ({navigation}) => {
@@ -55,6 +57,12 @@ const FormTrainingPlan = ({navigation}) => {
                     <SubmitButton 
                         bgColor={'#fab758'}
                         submitFunc={() => axiosContext.postTrainingPlan(form, navigation, 'TrainingPlans', setErrors)} />
+                    <ButtonItem 
+                    navigation={navigation}
+                    route={'TrainingPlans'} 
+                    btnInfo={{name: 'Cancel'}} 
+                    bgColor={'#de2a1d'}
+                    extraStyling={styles.extraBtnStyling} />
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -71,7 +79,20 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         width: '45%',
         padding: 10,
-    }
+    },
+    extraBtnStyling: {
+        height: 28,
+        marginTop: 10,
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        marginBottom: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        color: 'white',
+        borderRadius: 10,
+    },
 })
 
 export default FormTrainingPlan;

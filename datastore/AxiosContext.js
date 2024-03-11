@@ -191,6 +191,27 @@ const AxiosProvider = ({children}) => {
         }
     }
 
+    const getProfileInformation = async (setProfileInfo) => {
+        try {
+            const response = await authAxios.get('user')
+
+            setProfileInfo(response.data)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
+    const deleteAccount = async (authContext, navigation, route) => {
+        try {
+            // const response = await authAxios.delete('user')
+            console.log('yoooo lets gooooo!!!')
+
+            // authContext.logout()
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
     return (
         <Provider
           value={{
@@ -203,7 +224,9 @@ const AxiosProvider = ({children}) => {
             postActivityTemplate,
             getActivityTemplates,
             putActivityTemplate,
-            deleteActivityTemplate
+            deleteActivityTemplate,
+            getProfileInformation,
+            deleteAccount
           }}>
           {children}
         </Provider>
